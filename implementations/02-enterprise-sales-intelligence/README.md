@@ -9,11 +9,11 @@
 
 ## 1. Identity & Purpose
 
-A 615-line operational source of truth consolidating six fragmented sales assets into a single document covering ideal customer profiles, messaging frameworks, competitive intelligence, sequence rules, and CRM operating procedures. Adopted as the onboarding document for new RevSend SDR hires.
+A 615-line operational source of truth consolidating six fragmented sales assets into a single document covering ideal customer profiles, messaging frameworks, competitive intelligence, sequence rules, and CRM operating procedures. Designed to serve as the onboarding document for new SDR hires as the RevSend team scales.
 
 **Problem solved:** RevSend's sales knowledge was distributed across six files in six different formats — a 52-slide competitive deck, a 47-slide client use cases deck, a 27,000-word cold outreach playbook, 125+ competitor case study URLs, a 102-company prospect research spreadsheet, and a collection of ad-hoc messaging templates. An SDR preparing for a prospect call had to open six tabs, cross-reference manually, and reconstruct the buyer story on the fly. New-hire onboarding took ~2 weeks of this manual synthesis before a rep could run their own outreach. The source-of-truth doc compressed that to one searchable file.
 
-**Users:** RevSend SDRs, account managers, and new hires. Became the canonical onboarding document.
+**Users:** RevSend SDRs and account managers. Serves as the onboarding reference document as the team scales.
 
 ---
 
@@ -97,7 +97,7 @@ What was previously a 30-minute prep session across six tabs becomes a 5-minute 
 
 **Adoption:**
 - Onboarding compressed from a multi-week manual synthesis process to a guided reading cycle against a single document
-- Adopted as the canonical onboarding document for new SDR hires
+- Serves as the onboarding reference document for new SDR hires as the team scales
 - Replaces daily cross-tab lookup with a single searchable file
 
 **Data lineage:**
@@ -152,7 +152,7 @@ What was previously a 30-minute prep session across six tabs becomes a 5-minute 
 
 ## 9. Resume Bullet (Published)
 
-> Architected a 615-line enterprise sales intelligence system for a B2B SaaS sales team, consolidating 6 fragmented source documents (52-slide competitive deck, 47-slide client use cases deck, 125+ competitor case study URLs, 27,000-word cold outreach playbook, 102-company prospect research, template library) into a single cross-referenced source of truth using a multi-session AI pipeline with explicit context-transfer documents; adopted as the canonical SDR onboarding document, compressing new-hire ramp from a multi-week manual synthesis process to a guided reading cycle against a single searchable file.
+> Architected a 615-line enterprise sales intelligence system for a B2B SaaS sales team, consolidating 6 fragmented source documents (52-slide competitive deck, 47-slide client use cases deck, 125+ competitor case study URLs, 27,000-word cold outreach playbook, 102-company prospect research, template library) into a single cross-referenced source of truth using a multi-session AI pipeline with explicit context-transfer documents; designed as the onboarding reference document for new SDR hires as the team scales, replacing a multi-week manual synthesis process with a guided reading cycle against a single searchable file.
 
 Every number in this bullet is verifiable from the source documents and the final output.
 

@@ -33,7 +33,7 @@ Each folder contains the full nine-section spec including pipeline architecture,
 
 | | |
 |---|---|
-| **What I Built** | An ETL pipeline that ingested 88,306 session records and 12,244 client records from 4 disparate source files (CSV + Apple Numbers), cleaned and deduplicated the data, and produced a segmented client database with RFM scoring for targeted reactivation campaigns. |
+| **What I Built** | An ETL pipeline and governed client data platform that unifies 88,306 session records and 12,244 client records from 4 disparate source files (CSV + Apple Numbers) into a single clean, queryable master dataset. RFM segmentation for reactivation was the first use case; the same dataset now powers ad-hoc segmentation, lifetime-value analysis, cohort retention tracking, and any other behavioral question the business needs to answer. |
 | **Technical Details** | Python (pandas, openpyxl) for data cleaning: phone parsing via regex across 6 source columns, email deduplication, state standardization (40+ format variations), and DOB placeholder detection (identified 3,528 fake dates). Name-matching engine using exact match + date-proximity disambiguation + Unicode normalization achieved 99.97% match accuracy. RFM scoring with 5-tier quantile binning produced 10 behavioral segments. |
 | **Business Result** | Identified 3,029 lapsed clients with $1.2M+ in historical spend and 6 upsell segments with full contact info attached. Gave the business its first data-driven view of client behavior across its entire history. Provides the segmentation backbone behind ongoing targeted outreach across BCBA's $1.2M+ lapsed-client spend universe, including the Q1 2026 reactivation campaign. |
 | **My Role** | Data architect. Defined all business rules, cleaning strategy, and QA criteria. Directed Claude as execution engine through every phase. |
@@ -46,7 +46,7 @@ Each folder contains the full nine-section spec including pipeline architecture,
 |---|---|
 | **What I Built** | An AI-driven competitive intelligence system that scraped 26 competitor websites, structured 500+ sponsor prospects into a categorized CRM workbook, and produced tier analysis that directly led to a new product launch. |
 | **Technical Details** | Chrome extension scraping with custom delimiters. Python (openpyxl) for deduplication, categorization, and Excel workbook updates. Output: 14-tab workbook/CRM with 500+ records across 7 prospect categories. Competitive tier analysis across 7 leagues revealed a missing sub-$1K sponsorship tier. |
-| **Business Result** | Discovered the sub-$1K sponsorship gap and built the $275/mo Community Partner program from nothing to capture it — a new lowest-friction tier designed for set-and-forget billing that sits alongside existing Top ($5K / 6-month term), Mid ($3K / 6-month term), and Quarter ($1,750 / 3-month term) tiers. Built a complete sponsor prospect pipeline that didn't exist before — 500+ qualified prospects with pitch angle and priority tier assigned. |
+| **Business Result** | Discovered the sub-$1K entry-commitment gap and built the $275/mo Community Partner program from nothing to capture it — a new lowest-friction tier designed for set-and-forget billing that sits alongside existing Top ($5K / 6-month term), Mid ($3K / 6-month term), and Quarter ($1,750 / 3-month term) tiers. Built a complete sponsor prospect pipeline that didn't exist before — 500+ qualified prospects with pitch angle and priority tier assigned. |
 | **My Role** | Designed data architecture, ran scraping operations, directed analysis priorities, and made the product pricing decision. |
 
 ---
@@ -68,7 +68,7 @@ Each folder contains the full nine-section spec including pipeline architecture,
 |---|---|
 | **What I Built** | A scraping and analysis pipeline that extracted 51 Instagram posts, structured them into a CSV with 8 analytical dimensions, and produced a strategic content analysis report with actionable recommendations. |
 | **Technical Details** | Chrome extension MCP for Instagram scraping (navigating login walls, grid + Reels tabs). Output: 51-post structured CSV + comprehensive 8-dimension analysis report covering engagement rates, content types, timing, and sponsor integration performance. |
-| **Business Result** | Reels outperformed static posts by 3.2x on average engagement; sponsor integration posts performed above baseline. Informed the content strategy shift toward video-first and sponsor-embedded content — now the default for all new posts. |
+| **Business Result** | Turned "what should we post today?" from a recurring friction point into a directed decision. The analysis identified which content types, posting cadences, and sponsor-integration formats landed with the audience; those findings feed directly into the Brand Management Hub (implementation #3) so every new post goes out on-brand, on-strategy, and with intent. |
 | **My Role** | Designed scraping methodology, structured the output schema, and authored the strategic analysis. |
 
 ---
@@ -132,7 +132,7 @@ Each folder contains the full nine-section spec including pipeline architecture,
 |---|---|
 | **What I Built** | A 615-line operational source of truth consolidating 6+ fragmented sales assets into a single document with 10 interconnected sections covering ICPs, messaging frameworks, competitive intelligence, sequence rules, and CRM operating procedures. |
 | **Technical Details** | Data sources: 52-slide competitive analysis deck, 47-slide client use cases deck (22 client profiles), 125+ competitor case study URLs, 27,000-word cold outreach playbook, 102-company AI devtools prospect research. Architecture: iterative extraction → cross-referencing → synthesis pipeline across multiple AI sessions with context transfer documents to maintain state. Output: structured markdown with relational cross-references (ICP definitions → messaging templates → sequence days → competitive battle cards). |
-| **Business Result** | Reduced document lookup from 6 separate files to 1 searchable source. Created 30+ unique message variants mapped to 5 ICP types across 6–7 touch points each. Mapped 22 client stories to specific industries with exact stats for real-time objection handling. Adopted as the onboarding document for new RevSend SDR hires. |
+| **Business Result** | Reduced document lookup from 6 separate files to 1 searchable source. Created 30+ unique message variants mapped to 5 ICP types across 6–7 touch points each. Mapped 22 client stories to specific industries with exact stats for real-time objection handling. Serves as the onboarding document for new SDR hires as the team scales. |
 | **My Role** | Directed the entire consolidation. Defined the 10-section information architecture. Provided all source materials and business context. Made editorial decisions. Validated competitive intelligence, client stories, and ROI metrics against original sources. |
 
 ---
@@ -278,7 +278,7 @@ Each folder contains the full nine-section spec including pipeline architecture,
 | **Data Enrichment** | Apollo.io API integration for contact verification and enrichment |
 | **Data Engineering** | Python (pandas, openpyxl), ETL pipeline design, RFM scoring, regex parsing, deduplication algorithms |
 | **Web Scraping** | Chrome extension MCP for JS-rendered sites (Wix, Instagram login walls) |
-| **Document Generation** | Python + ReportLab for branded PDFs; docx-js for branded Word documents; Canva MCP for design-native output |
+| **Document Generation** | Python + ReportLab for branded PDFs with embedded images and QR codes; Canva MCP for design-native output |
 | **MCP Integration** | Model Context Protocol server-based tool integration connecting AI to live SaaS APIs (HubSpot, Apollo.io, Chrome, Canva) |
 | **Sales Process Design** | ICP frameworks, multi-channel sequence architecture, competitive positioning, battle card development |
 | **Validation Architecture** | Fail-closed systems, cross-table referential integrity, automated quality scoring, eval-driven development with `pypdf` assertion grading |

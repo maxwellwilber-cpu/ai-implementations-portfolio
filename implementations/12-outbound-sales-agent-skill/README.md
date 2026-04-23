@@ -13,7 +13,7 @@ A packaged Claude skill that encapsulates the complete RevSend outbound sales wo
 
 **Problem solved:** Before this skill existed, executing an outbound sales motion at RevSend required an SDR to cross-reference six separate documents: the Enterprise Sales Intelligence master (implementation #1), the ICP Framework (#2), the Messaging Framework (#3), the Industry Story Lookup (#4), the Competitive Battle Cards (#5), and the HubSpot Operating System (#7). Any question — "what sequence do I run on this lead?" "which template fits this ICP?" "how do I log this voicemail?" — required a manual traversal. The skill collapses all six into a single natural-language interface.
 
-**Users:** Currently used by 4 active reps (including the two co-founders who invoke it occasionally and the SDRs on the team including Max). Installed at the org level so adoption expands as the team scales. Any rep can invoke the skill in Cowork with a question like "draft a first-touch sequence for this prospect" and receive an ICP-aligned, messaging-template-backed, sequence-rule-compliant answer in one pass.
+**Users:** Currently used by 4 SDRs and the 2 co-founders. Installed at the org level; adoption expands as the team scales. Any rep can invoke the skill in Cowork with a question like "draft a first-touch sequence for this prospect" and receive an ICP-aligned, messaging-template-backed, sequence-rule-compliant answer in one pass.
 
 ---
 
@@ -92,7 +92,7 @@ A naive "all-in-one" skill would load all six references for both cases; this on
 
 **Operational:**
 - Installed at the org level; invokable by any RevSend team member in their Cowork session
-- 4 active users currently (including two co-founders who use it occasionally); adoption scaling with the team
+- 4 SDRs and 2 co-founders currently use it; adoption scaling with the team
 
 ---
 
