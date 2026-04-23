@@ -3,150 +3,145 @@
 **Built for:** RevSend (B2B SaaS corporate gifting platform)
 **Deployed:** 2025
 **Author:** Maxwell Wilber
-**Package:** `outbound-sales-agent.skill`
+**Package:** Claude skill — opinionated system prompt
 
 ---
 
 ## 1. Identity & Purpose
 
-A packaged Claude skill that encapsulates the complete RevSend outbound sales workflow — ICP logic, messaging selection, sequence management, CRM procedures — into a reusable, deployable agent configuration installable at the RevSend org level.
+A Claude skill that functions as a dedicated outbound sales strategist for RevSend. It gives Claude deep, in-context knowledge of RevSend's product differentiators, ICP and buyer personas, competitive landscape, sales motion, and messaging principles — so every invocation produces RevSend-specific strategy, copy, and pipeline assets on demand rather than generic LLM output.
 
-**Problem solved:** Before this skill existed, executing an outbound sales motion at RevSend required an SDR to cross-reference six separate documents: the Enterprise Sales Intelligence master (implementation #1), the ICP Framework (#2), the Messaging Framework (#3), the Industry Story Lookup (#4), the Competitive Battle Cards (#5), and the HubSpot Operating System (#7). Any question — "what sequence do I run on this lead?" "which template fits this ICP?" "how do I log this voicemail?" — required a manual traversal. The skill collapses all six into a single natural-language interface.
+**Problem solved:** Before this skill existed, asking an LLM for help with RevSend outbound meant starting every conversation by explaining the product, the ICP, the competitive positioning, and the sales motion before any real work could happen. The LLM would then default to generic sales advice — "send gifts to build relationships" — instead of drawing on RevSend's specific differentiators (open-catalog Chrome extension, 60-second CRM-to-checkout, month-to-month pricing against annual-contract incumbents). The skill front-loads all of that context so every invocation starts from RevSend's specific reality.
 
-**Users:** Currently used by 4 SDRs and the 2 co-founders. Installed at the org level; adoption expands as the team scales. Any rep can invoke the skill in Cowork with a question like "draft a first-touch sequence for this prospect" and receive an ICP-aligned, messaging-template-backed, sequence-rule-compliant answer in one pass.
+**Users:** Currently used by 4 SDRs (including Max) and the 2 co-founders at RevSend. Installed at the org level; any team member can invoke it in Cowork and receive the same context-rich responses.
 
 ---
 
 ## 2. Invocation → Output
 
-**Invocation:** Natural-language prompts in any Cowork session with the skill installed. Examples:
-- "Draft a sequence for this prospect: [prospect info]"
-- "What template should I use for the day-3 follow-up on this account?"
-- "How should I log the voicemail I just left for [contact]?"
-- "Which ICP does this company fit?"
-- "The prospect mentioned they're evaluating Sendoso — what's my play?"
+**Invocation:** Natural-language prompts in any Cowork session with the skill installed. The skill figures out which of four modes applies and responds accordingly:
 
-**Output:** Task-appropriate response pulling from the relevant subsystem:
-- Sequence drafting → full sequence with per-touch message, timing, and CTA
-- Template selection → specific template from the 30+ library, with the "why this fits" rationale
-- Activity logging → the exact HubSpot note format to paste (per the operating system standard)
-- ICP classification → one of 5 tiers with the reasoning
-- Competitive positioning → the battle card for that competitor with the specific talking points
+- **Targeting & Research** — "Who should I go after?" "Build me a prospect list." "Score this account list."
+- **Messaging & Copy** — "Write a cold email to this prospect." "Draft a sequence for this account." "Rewrite this LinkedIn DM."
+- **Pipeline & Organization** — "Build me a campaign tracker." "Audit my current pipeline." "What should I do next with this contact?"
+- **Strategy & Planning** — "Refine my ICP." "Build a playbook for this campaign." "Review my outbound strategy."
+
+**Output:** The skill matches the output medium to the ask. Quick strategy or feedback questions get conversational answers. Substantive deliverables — prospect lists, email sequences, pipeline trackers, playbooks — get produced as files (`.xlsx`, `.md`, or `.docx` depending on the ask). Forcing a spreadsheet when a paragraph will do is an anti-pattern the skill is explicitly designed to avoid.
 
 ---
 
 ## 3. Skill Architecture
 
-Progressive-disclosure architecture matching the pattern Anthropic uses for its official skills:
+The skill is an engineered system prompt — not a wrapper around other scripts, not a multi-file reference loader. It is a single, carefully-structured body of context that shapes Claude's responses for every outbound-related task. The structure:
 
-**Core `SKILL.md`:** Deliberately minimal. Contains only the skill identity, the trigger phrases, and the top-level decision tree for "which subsystem does this question belong to?" Kept light so per-invocation context cost stays low.
+**Role framing.** Opens with "You are an outbound sales strategist and execution partner for RevSend" and explicitly rejects the "chatbot that spits out email templates" default. Shapes behavior before any content is loaded.
 
-**Reference files** (loaded on demand, only when the current question requires that depth):
-- `references/icp-decision-tree.md` — the 5-tier ICP framework with qualification questions and boundary cases
-- `references/messaging-selection.md` — the 30+ template library with selection rules per ICP × touch point
-- `references/sequence-logic.md` — cadence rules, escalation criteria, breakup conditions
-- `references/hubspot-procedures.md` — activity note formats, status transition rules, logging standards
-- `references/competitive-plays.md` — the 5 battle cards with kill-shot talking points and objection responses
-- `references/industry-stories.md` — the 22-story lookup indexed by vertical
+**RevSend product knowledge section.** Open catalog via Chrome extension, 60-second CRM-to-checkout, digital-to-handwritten notes, seat-based SaaS pricing ($19/mo Starter, month-to-month — a wedge against Sendoso/Reachdesk annual contracts), native HubSpot/Salesforce attribution, hybrid digital + physical sending. These differentiators are the substrate every piece of outreach has to connect back to.
 
-**Loading rule:** `SKILL.md` routes each question to the one or two reference files it needs. A messaging-template question loads `messaging-selection.md` and (if ICP isn't specified) `icp-decision-tree.md`. A logging question loads only `hubspot-procedures.md`. The full reference library is never loaded at once.
+**ICP and buyer personas.** Sweet spot (50–500 employees, U.S.-focused, Salesforce/HubSpot users, active SDR/AE motion). Four personas with pain points and messaging angles: SDR/BDR Leaders, Sales/Revenue Ops, CS/Retention Leaders, HR/People Ops.
 
-This matters because in a naive single-prompt approach, you'd either (a) try to stuff all six subsystems into one mega-prompt (context bloat, degraded response quality), or (b) ask the user to repeatedly re-specify context every turn (terrible UX). Progressive disclosure is the middle path: deep knowledge available on demand, lightweight context by default.
+**Competitive battle cards.** Per-competitor objection responses — for Sendoso/Reachdesk ("they have a bigger catalog," "we need global sending," "we already have a contract") and for Brilliant ("they offer white-glove creative services"). Every response is pre-mapped to a RevSend differentiator.
+
+**Sales motion and discovery questions.** 14-day trial, $100 credits, 5-step sales flow from Discovery to Conversion. Five discovery questions specifically engineered to tilt toward RevSend's strengths (e.g., "How fast can a rep send a personalized gift today — from inside Salesforce/HubSpot?").
+
+**Use case playbooks.** Stalled Deal Re-Engagement, Demo Show-Rate Boost, Closed-Lost Reactivation, Customer Expansion & Retention — each with trigger conditions, gift recommendations, and cadence outlines.
+
+**Messaging principles.** "Lead with the prospect's world, not yours." "One idea per message." "Short > long." "Specificity beats cleverness." "Always include a clear, low-friction CTA." "Gift-forward when relevant." These act as implicit output filters on any copy the skill produces.
+
+**Working-with-Max section.** Explicit instructions on how to interact: give real feedback on Max's own copy (not sycophantic agreement), match response to ask (file vs. chat), reference Max's actual stack (HubSpot, Instantly, Prosp_AI, Airtable) instead of suggesting generic new tools.
 
 ---
 
-## 4. Reference File Structure
+## 4. What Makes This Non-Obvious
 
-Each reference file is authored to be loadable as standalone context — no cross-dependencies that would require loading multiple references for a single question. When a question *does* require multiple references (e.g. "draft a full sequence for an Enterprise HR Tech prospect evaluating Sendoso"), the skill loads them deliberately rather than preemptively.
+**Opinionated over neutral.** A generic "sales AI assistant" prompt is deliberately neutral so it works for any company. This skill is the opposite — it only works for RevSend, by design. That specificity is what pulls output quality far above what a generic assistant produces.
 
-**Example: sequence drafting request**
-1. `SKILL.md` recognizes "draft a sequence" as the primary intent
-2. Parses prospect info to determine if ICP is specified; if not, loads `icp-decision-tree.md` first to classify
-3. Loads `messaging-selection.md` to select templates for the ICP × touch points
-4. Loads `sequence-logic.md` to apply cadence rules
-5. If the prospect mentions a specific competitor, additionally loads `competitive-plays.md`
-6. Assembles the output with citations back to the reference files used
+**Response-mode calibration.** The skill explicitly refuses to force a deliverable when a conversational answer would serve better, and refuses to give a paragraph when the user clearly needs a file. Most skills default to one output mode regardless of ask; this one matches medium to request.
 
-**Example: activity logging request**
-1. `SKILL.md` recognizes "log a voicemail" as the primary intent
-2. Loads only `hubspot-procedures.md`
-3. Returns the exact note format to paste, with the 5 required fields populated from the conversation
+**Embedded anti-sycophancy instruction.** "If he shows you his own copy or strategy, give real feedback. Tell him what's weak and how to fix it." Explicitly prevents the skill from becoming a yes-machine — which would otherwise be the LLM's default for a user whose work it's reviewing.
 
-A naive "all-in-one" skill would load all six references for both cases; this one loads what's needed.
+**Tool-stack grounding.** References Max's actual tools (HubSpot for CRM, Instantly and Prosp_AI for outbound, Airtable for competitor matrix) and his actual teammates by name (Nick Natale on demos, Katherine McDermott on marketing, Jonathan Nahin on leadership). Recommendations stay inside his real workflow instead of drifting into "install a new tool" territory.
+
+**Messaging principles as output filters.** "Specificity beats cleverness" and "one idea per message" aren't just advice to the user — they constrain the skill's own copy output. Bad output is filtered by construction rather than rejected post-hoc.
+
+**Per-persona talk tracks.** Built-in one-liners for SDR/Sales Leaders, Customer Success, and RevOps/Finance so the skill can pivot tone and angle based on who the prospect is.
+
+**What would break with a generic prompt:**
+
+- Output would default to "send gifts to build relationships" rather than RevSend-specific positioning against incumbents
+- Competitive objection responses would be invented from training data rather than aligned with Max's actual battle cards
+- ICP output would reference generic B2B personas rather than RevSend's specific 50–500 employee, U.S.-focused, Salesforce/HubSpot sweet spot
+- Copy output wouldn't pass the "one idea per message" filter
+- Recommendations would suggest adding tools Max doesn't use
+
+**Senior-engineer prompt-design choices worth flagging:**
+
+- Organized around user intent (4 modes) rather than information taxonomy, because invocation framing drives better LLM behavior than reference-style organization would
+- "How to Think About Your Role" framing ahead of knowledge content, because role conditioning shapes response patterns more effectively than content alone
+- Explicit anti-sycophancy instruction, because LLMs default to agreement
+- Explicit response-mode guidance, because LLMs default to their most elaborate available output
+- Real names and real tools throughout, because specificity in the prompt produces specificity in the output
 
 ---
 
 ## 5. Quantifiable Metrics
 
-**Scale:**
-- 6 subsystems unified behind a single natural-language interface
-- 30+ messaging template variants accessible via selection logic
-- 22 client stories indexed by industry for on-demand retrieval
-- 5 competitor battle cards with objection-handling scripts
-- 5 ICP tiers with qualification questions
+**Adoption:**
+- 4 SDRs (including Max) and 2 co-founders currently use it
+- Installed at RevSend org level; adoption scales with the team
+
+**Depth of embedded context:**
+- 6 core RevSend differentiators with per-differentiator talking points
+- 4 buyer personas with pain points and messaging angles
+- 3 competitors with per-objection response scripts
+- 4 use case playbooks with cadence outlines
+- 5 discovery questions engineered to surface RevSend strengths
+- 6 explicit messaging principles acting as copy-output filters
+- 4 response modes with tailored output types
 
 **Efficiency (based on Max's own usage):**
 - Per-prospect prep time compressed from ~30 min manual cross-reference to ~3 min skill invocation
-- Template selection is rule-based via `messaging-selection.md` rather than rep judgment — removes the "I used the wrong template for this ICP" failure mode by design
-- Onboarding benefit: reps can ask the skill questions in real time rather than re-reading the full Enterprise Sales Intelligence doc every time
-
-**Operational:**
-- Installed at the org level; invokable by any RevSend team member in their Cowork session
-- 4 SDRs and 2 co-founders currently use it; adoption scaling with the team
+- Template selection, talk track selection, and objection responses are rule-driven by persona/competitor/use case rather than rep judgment — removes "wrong talk track for this prospect" errors by design
 
 ---
 
 ## 6. Technical Differentiation
 
-**What makes this non-obvious:**
+**Prompt engineering over tool engineering.** This skill isn't an agent that calls tools — it's an engineered prompt that shapes LLM behavior through structure. The skill's value is entirely in how the context is organized and framed, not in any code that executes.
 
-- **Progressive-disclosure architecture.** Not every question needs every reference file. A logging question doesn't need the ICP framework. A template question doesn't need sequence logic. The architecture explicitly optimizes for "load the minimum context required for this question" — the same pattern Anthropic uses for its own skills.
-- **Deterministic routing in `SKILL.md`, generative depth in references.** The top-level routing logic ("is this an ICP question or a messaging question or a logging question?") is rule-based — the skill reads the question and picks the reference file deterministically. Only inside the references does the LLM do generative work like drafting actual message content. This keeps routing reliable while preserving flexibility where it matters.
-- **Template selection rules instead of template selection by vibe.** A rep asking "which template should I use?" gets an answer derived from the 5-ICP × 6-touch-point matrix, not from the LLM's gut. If two templates are close, the rule chooses the one with the higher historical reply rate. Removing rep judgment from template selection removes the single biggest source of messaging variance across the team.
-- **Composes on top of prior implementations.** This skill isn't a standalone — it references and invokes logic from the Enterprise Sales Intelligence system (#1), the ICP Framework (#2), the Messaging Framework (#3), the CRM Audit protocol (#6), and the HubSpot Operating System (#7). Each of those had to exist before this skill could be built; together they form a composable stack rather than six independent artifacts.
+**Role conditioning before content.** The "How to Think About Your Role" section deliberately precedes the product knowledge. Behavioral framing shapes LLM responses more effectively than content knowledge alone; most prompt authors lead with content and bury role conditioning at the bottom.
 
-**What would break with a less-rigorous approach:**
+**Opinionated positioning baked in.** Every product differentiator in the prompt is paired with the specific competitor wedge it creates. The LLM can't produce neutral positioning because the prompt doesn't give it a neutral frame to work from.
 
-- All-subsystem loading per invocation → context bloat and degraded response quality
-- Generative routing (LLM decides which subsystem applies) → unreliable and non-reproducible
-- No composition with upstream implementations → skill drifts from the source-of-truth documents as those evolve
-- No deterministic template selection → rep variance reintroduces the "wrong template for this ICP" failure mode
-
-**Senior-engineer design choices worth flagging:**
-
-- Progressive disclosure over monolithic context
-- Deterministic routing over generative routing at the top level
-- Rule-based template selection over vibes-based selection
-- Skill as a composition layer over upstream systems, not a replacement for them
-- Org-level installation rather than per-rep configuration
+**Output mode as a first-class concern.** Most skills produce one type of output. This one has explicit guidance on when to produce a file, when to give a paragraph, when to brainstorm conversationally, and when to deliver a deep strategic document — calibrated to the ask rather than the skill's defaults.
 
 ---
 
 ## 7. Deployment Status
 
-- **Status:** Production. Installed at the RevSend org level.
-- **Distribution:** `outbound-sales-agent.skill` packaged artifact.
-- **Trigger phrases:** Documented in `SKILL.md` and in onboarding materials — "draft a sequence," "what template," "how to log," "which ICP," "what's my play on [competitor]," and direct references to any of the underlying subsystem documents.
-- **Maintainer:** Max Wilber. Skill source lives in the RevSend shared repository.
-- **Update cadence:** Reference files are updated as the underlying subsystems evolve (new competitor → update `competitive-plays.md`; new ICP learning → update `icp-decision-tree.md`). Core `SKILL.md` rarely changes.
+- **Status:** Production. In active use by the RevSend outbound team since 2025.
+- **Distribution:** Claude skill installed at the RevSend org level.
+- **Invocation:** Natural-language prompts in any Cowork session; no per-user configuration required.
+- **Maintainer:** Max Wilber. Updates to skill content (new competitors, updated ICPs, new playbooks) propagate to all users on next invocation.
 
 ---
 
 ## 8. Business Outcomes for RevSend
 
+- **RevSend-specific output from every invocation.** Copy, strategy, and deliverables are grounded in the actual product and ICP — not hallucinated from generic sales training data.
 - **Per-prospect prep time compressed ~90% for Max's own usage.** ~30 min manual cross-reference → ~3 min skill invocation. Team-wide measurement pending as adoption scales.
-- **Template selection variance removed by design.** Rep-to-rep inconsistency in which template gets used for which ICP was a structural failure mode; the skill's rule-based selection removes it structurally. Variance reduction will be quantifiable once more reps use the skill at volume.
-- **Institutional knowledge accessible by invocation.** A new SDR doesn't have to read all 615 lines of the Enterprise Sales Intelligence doc before their first prospect call — they can ask the skill questions as they come up.
-- **Composable stack.** Each upstream implementation (master strategy, ICPs, messaging, CRM ops) gets more leverage because the skill makes them invokable rather than just readable.
+- **Institutional knowledge made invokable.** A new rep doesn't need to read every internal doc before their first prospect call — they can ask the skill and get context-rich answers in real time.
+- **Quality floor raised across the team.** Messaging principles ("one idea per message," "specificity beats cleverness") and embedded battle cards constrain output quality by design rather than by rep-by-rep review.
+- **Competitive positioning defensible in any conversation.** Objection responses and competitive wedges are pre-built; reps don't have to remember them under pressure.
 
 ---
 
 ## 9. Resume Bullet (Published)
 
-> Designed and shipped a packaged Claude skill (`outbound-sales-agent`) that encapsulates a B2B SaaS company's complete outbound sales workflow — ICP classification, template selection, sequence management, CRM logging, competitive plays — behind a single natural-language interface, using progressive-disclosure architecture (minimal core SKILL.md + per-subsystem reference files loaded on demand) to keep context costs low while preserving deep subsystem knowledge; compressed per-prospect prep time ~90% (30 min → 3 min) for my own use and removes template-selection variance across the team by design.
+> Built a packaged Claude skill (`outbound-sales-agent`) for a B2B SaaS gifting platform — an opinionated system prompt that front-loads RevSend's product differentiators, ICP, competitive battle cards, sales motion, and messaging principles into a single invokable context, producing RevSend-specific outbound strategy, copy, and pipeline assets on demand rather than generic LLM output. Currently used by 4 SDRs and the 2 co-founders; compressed my own per-prospect prep time ~90% (30 min → 3 min) and removed variance in template/talk-track selection by encoding it as rule-driven logic in the prompt.
 
 ---
 
 ## Reproducibility
 
-The skill structure is reproducible from the repository: `SKILL.md` contains the routing logic, each reference file is a standalone subsystem document, and the composition with upstream implementations (#1, #2, #3, #6, #7) is explicit in the reference file cross-links. Any engineer inspecting the skill can trace routing → reference loading → output assembly step by step.
+The skill is a system prompt. LLM invocations have inherent non-determinism, but the structural outputs (ICP classifications, objection responses, playbook cadences, messaging principle adherence) are constrained by the embedded rules and have been consistent across invocations in practice.
