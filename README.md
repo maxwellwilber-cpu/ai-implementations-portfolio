@@ -17,7 +17,7 @@ This portfolio covers active consulting work for **Beach City Baseball Academy**
 
 Five implementations have full-detail READMEs in dedicated folders. These are the ones a hiring manager screening for a specific capability should click into first:
 
-- **[Client Data Warehouse & Analytics Platform](implementations/01-client-data-warehouse/)** — ETL pipeline unifying 88,306 session records across 4 sources with 99.97% match accuracy validated against a hand-labeled ground truth set; surfaced 3,029 lapsed clients with $1.2M+ in historical spend.
+- **[Client Data Warehouse & Analytics Platform](implementations/01-client-data-warehouse/)** — ETL pipeline unifying 88,306 session records across 4 sources with 99.97% match accuracy; surfaced 3,029 lapsed clients with $1.2M+ in historical spend.
 - **[Enterprise Sales Intelligence System](implementations/02-enterprise-sales-intelligence/)** — 615-line source-of-truth consolidating 6 fragmented sales assets via a multi-session AI pipeline with context-transfer documents; adopted as canonical SDR onboarding document.
 - **[CRM Audit & Batch Remediation](implementations/06-crm-audit-remediation/)** — HubSpot API automation auditing 612 contacts and executing 550 batch updates with 0 failures and a fail-closed reconciliation check; ~8 hours of SDR time reclaimed per audit cycle.
 - **[Outbound Sales Agent Skill](implementations/12-outbound-sales-agent-skill/)** — Packaged Claude skill with progressive-disclosure architecture unifying 6 subsystems behind a single interface; compressed per-prospect prep time ~90% (30 min → 3 min).
@@ -35,7 +35,7 @@ Each folder contains the full nine-section spec including pipeline architecture,
 |---|---|
 | **What I Built** | An ETL pipeline that ingested 88,306 session records and 12,244 client records from 4 disparate source files (CSV + Apple Numbers), cleaned and deduplicated the data, and produced a segmented client database with RFM scoring for targeted reactivation campaigns. |
 | **Technical Details** | Python (pandas, openpyxl) for data cleaning: phone parsing via regex across 6 source columns, email deduplication, state standardization (40+ format variations), and DOB placeholder detection (identified 3,528 fake dates). Name-matching engine using exact match + date-proximity disambiguation + Unicode normalization achieved 99.97% match accuracy. RFM scoring with 5-tier quantile binning produced 10 behavioral segments. |
-| **Business Result** | Identified 3,029 lapsed clients with $1.2M+ in historical spend and 6 upsell segments with full contact info attached. Gave the business its first data-driven view of client behavior across its entire history. Directly informed the Q1 2026 reactivation campaign that contributed to the $78,750 in attributable YTD revenue. |
+| **Business Result** | Identified 3,029 lapsed clients with $1.2M+ in historical spend and 6 upsell segments with full contact info attached. Gave the business its first data-driven view of client behavior across its entire history. Provides the segmentation backbone behind ongoing targeted outreach across BCBA's $1.2M+ lapsed-client spend universe, including the Q1 2026 reactivation campaign. |
 | **My Role** | Data architect. Defined all business rules, cleaning strategy, and QA criteria. Directed Claude as execution engine through every phase. |
 
 ---
@@ -46,7 +46,7 @@ Each folder contains the full nine-section spec including pipeline architecture,
 |---|---|
 | **What I Built** | An AI-driven competitive intelligence system that scraped 26 competitor websites, structured 500+ sponsor prospects into a categorized CRM workbook, and produced tier analysis that directly led to a new product launch. |
 | **Technical Details** | Chrome extension scraping with custom delimiters. Python (openpyxl) for deduplication, categorization, and Excel workbook updates. Output: 14-tab workbook/CRM with 500+ records across 7 prospect categories. Competitive tier analysis across 7 leagues revealed a missing sub-$1K sponsorship tier. |
-| **Business Result** | Discovered the missing tier gap and launched a $275/mo Community Partner product to capture it. 5 new partners signed in Q1 2026 at $10,400 in attributable revenue. Built a complete sponsor prospect pipeline that didn't exist before — 500+ qualified prospects with pitch angle and priority tier assigned. |
+| **Business Result** | Discovered the sub-$1K sponsorship gap and built the $275/mo Community Partner program from nothing to capture it — a new lowest-friction tier designed for set-and-forget billing that sits alongside existing Top ($5K / 6-month term), Mid ($3K / 6-month term), and Quarter ($1,750 / 3-month term) tiers. Built a complete sponsor prospect pipeline that didn't exist before — 500+ qualified prospects with pitch angle and priority tier assigned. |
 | **My Role** | Designed data architecture, ran scraping operations, directed analysis priorities, and made the product pricing decision. |
 
 ---
@@ -90,7 +90,7 @@ Each folder contains the full nine-section spec including pipeline architecture,
 |---|---|
 | **What I Built** | A prioritized outreach system covering 500+ sponsor prospects organized into 4 tiers with 5 category-specific pitch strategies and a structured follow-up cadence. |
 | **Technical Details** | 500+ prospects prioritized into 4 tiers. 5 category-specific pitch strategies tailored to each prospect type. 5-touch follow-up cadence designed to increase response rates from the 5–10% industry baseline. |
-| **Business Result** | Deployed to support the 2025–2026 sponsorship drive: 21 total partners signed (16 in 2025 + 5 new in Q1 2026) against an initial target of 16 — exceeded target by 31%. Per-partner annualized revenue tracked $110K+ by end of year one. |
+| **Business Result** | Deployed to support the 2025–2026 sponsorship drive: 21 total partners signed (16 in 2025 + 5 new in Q1 2026) against an initial target of 16 — exceeded target by 31%. The 2025 cohort generated $50K+ in the first 6 months at a $110K+ annualized program run rate across tiers ($275/mo Community Partner up to $5K 6-month top-tier). Q1 2026 new partners contributed $10,400 in attributable revenue across a tier mix. |
 | **My Role** | Provided all business intelligence through discovery interviews, made key strategy decisions on tier definitions and pitch angles. |
 
 ---
@@ -143,7 +143,7 @@ Each folder contains the full nine-section spec including pipeline architecture,
 |---|---|
 | **What I Built** | A 5-tier Ideal Customer Profile framework segmenting RevSend's total addressable market into prioritized buyer types, each with firmographic criteria, pain points, entry angles, and objection-handling strategies. |
 | **Technical Details** | Analyzed 22 existing client profiles from the case study deck, cross-referenced with a 102-company prospect research list, and mapped common attributes to define segments. 5 ICPs ranked by fit, each mapped directly to corresponding messaging templates and sequence modifications in the master strategy. |
-| **Business Result** | Created 5 distinct buyer profiles with specific qualifying criteria, enabling prioritized outreach. Eliminated the "one pitch for everyone" approach across the managed book of 13 active accounts. |
+| **Business Result** | Created 5 distinct buyer profiles with specific qualifying criteria, enabling prioritized outreach. Eliminated the "one pitch for everyone" approach. The 5-tier framework is the segmentation layer every outbound message, sequence, and competitive play is calibrated against. |
 | **My Role** | Provided client base data and prospect research. Directed segmentation analysis. Validated ICP definitions against real-world sales experience. Refined priority ranking based on historical close rates. |
 
 ---

@@ -96,7 +96,7 @@ What was previously a 30-minute prep session across six tabs becomes a 5-minute 
 - 125+ case study URLs traced as claim validators
 
 **Adoption:**
-- Onboarding time reduced from ~2 weeks of manual synthesis to ~3 days of guided reading
+- Onboarding compressed from a multi-week manual synthesis process to a guided reading cycle against a single document
 - Adopted as the canonical onboarding document for new SDR hires
 - Replaces daily cross-tab lookup with a single searchable file
 
@@ -143,7 +143,7 @@ What was previously a 30-minute prep session across six tabs becomes a 5-minute 
 
 ## 8. Business Outcomes for RevSend
 
-- **Onboarding compressed ~70%.** New SDR ramp from ~2 weeks of manual synthesis to ~3 days of guided reading.
+- **Onboarding compressed substantially.** New SDR ramp moved from a multi-week manual synthesis process to a guided reading cycle against a single document.
 - **Single source of truth for sales content.** Eliminated the "which document is authoritative" question that previously sat behind every messaging and competitive discussion.
 - **Downstream automation unlocked.** The Outbound Sales Agent Skill (implementation #12) uses this document as its reference corpus. The Multi-Channel Messaging Framework (implementation #3) and Industry Story Lookup (implementation #4) are derived from sections of this document. The Master Strategy Engine is the root system that the downstream implementations compose against.
 - **Defensible competitive positioning.** Every competitive claim in the battle cards is paired with a validating case study URL. When a claim is challenged in a live call, the rep can produce the source in seconds rather than "I think I saw that somewhere."
@@ -152,7 +152,7 @@ What was previously a 30-minute prep session across six tabs becomes a 5-minute 
 
 ## 9. Resume Bullet (Published)
 
-> Architected a 615-line enterprise sales intelligence system for a B2B SaaS sales team, consolidating 6 fragmented source documents (52-slide competitive deck, 47-slide client use cases deck, 125+ competitor case study URLs, 27,000-word cold outreach playbook, 102-company prospect research, template library) into a single cross-referenced source of truth using a multi-session AI pipeline with explicit context-transfer documents; adopted as the canonical SDR onboarding document, compressing ramp time from ~2 weeks of manual synthesis to ~3 days of guided reading.
+> Architected a 615-line enterprise sales intelligence system for a B2B SaaS sales team, consolidating 6 fragmented source documents (52-slide competitive deck, 47-slide client use cases deck, 125+ competitor case study URLs, 27,000-word cold outreach playbook, 102-company prospect research, template library) into a single cross-referenced source of truth using a multi-session AI pipeline with explicit context-transfer documents; adopted as the canonical SDR onboarding document, compressing new-hire ramp from a multi-week manual synthesis process to a guided reading cycle against a single searchable file.
 
 Every number in this bullet is verifiable from the source documents and the final output.
 

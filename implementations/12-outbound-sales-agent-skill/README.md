@@ -13,7 +13,7 @@ A packaged Claude skill that encapsulates the complete RevSend outbound sales wo
 
 **Problem solved:** Before this skill existed, executing an outbound sales motion at RevSend required an SDR to cross-reference six separate documents: the Enterprise Sales Intelligence master (implementation #1), the ICP Framework (#2), the Messaging Framework (#3), the Industry Story Lookup (#4), the Competitive Battle Cards (#5), and the HubSpot Operating System (#7). Any question — "what sequence do I run on this lead?" "which template fits this ICP?" "how do I log this voicemail?" — required a manual traversal. The skill collapses all six into a single natural-language interface.
 
-**Users:** The RevSend SDR team. Any rep can invoke the skill in Cowork with a question like "draft a first-touch sequence for this prospect" and receive an ICP-aligned, messaging-template-backed, sequence-rule-compliant answer in one pass.
+**Users:** Currently used by 4 active reps (including the two co-founders who invoke it occasionally and the SDRs on the team including Max). Installed at the org level so adoption expands as the team scales. Any rep can invoke the skill in Cowork with a question like "draft a first-touch sequence for this prospect" and receive an ICP-aligned, messaging-template-backed, sequence-rule-compliant answer in one pass.
 
 ---
 
@@ -39,7 +39,7 @@ A packaged Claude skill that encapsulates the complete RevSend outbound sales wo
 
 Progressive-disclosure architecture matching the pattern Anthropic uses for its official skills:
 
-**Core `SKILL.md`:** ~100 lines. Contains only the skill identity, the trigger phrases, and the top-level decision tree for "which subsystem does this question belong to?" Deliberately minimal to keep per-invocation context cost low.
+**Core `SKILL.md`:** Deliberately minimal. Contains only the skill identity, the trigger phrases, and the top-level decision tree for "which subsystem does this question belong to?" Kept light so per-invocation context cost stays low.
 
 **Reference files** (loaded on demand, only when the current question requires that depth):
 - `references/icp-decision-tree.md` — the 5-tier ICP framework with qualification questions and boundary cases
@@ -85,14 +85,14 @@ A naive "all-in-one" skill would load all six references for both cases; this on
 - 5 competitor battle cards with objection-handling scripts
 - 5 ICP tiers with qualification questions
 
-**Efficiency:**
-- Prep time per prospect call: ~30 min manual cross-reference → ~3 min skill invocation
-- Template selection accuracy: determined by the selection rules in `messaging-selection.md`, not by rep judgment (removes the "I used the wrong template for this ICP" failure mode)
-- Onboarding time for new SDRs: compressed further than the Enterprise Sales Intelligence doc alone achieved, because reps can ask the skill questions rather than re-reading the doc
+**Efficiency (based on Max's own usage):**
+- Per-prospect prep time compressed from ~30 min manual cross-reference to ~3 min skill invocation
+- Template selection is rule-based via `messaging-selection.md` rather than rep judgment — removes the "I used the wrong template for this ICP" failure mode by design
+- Onboarding benefit: reps can ask the skill questions in real time rather than re-reading the full Enterprise Sales Intelligence doc every time
 
 **Operational:**
-- Invokable by any RevSend team member with the skill installed in their Cowork session
-- Deployed at the org level; no per-user configuration required
+- Installed at the org level; invokable by any RevSend team member in their Cowork session
+- 4 active users currently (including two co-founders who use it occasionally); adoption scaling with the team
 
 ---
 
@@ -134,8 +134,8 @@ A naive "all-in-one" skill would load all six references for both cases; this on
 
 ## 8. Business Outcomes for RevSend
 
-- **Prep time per prospect call compressed ~90%.** ~30 min manual cross-reference → ~3 min skill invocation.
-- **Template selection variance eliminated.** Rep-to-rep inconsistency in which template gets used for which ICP was a structural failure mode; the skill's rule-based selection removes it.
+- **Per-prospect prep time compressed ~90% for Max's own usage.** ~30 min manual cross-reference → ~3 min skill invocation. Team-wide measurement pending as adoption scales.
+- **Template selection variance removed by design.** Rep-to-rep inconsistency in which template gets used for which ICP was a structural failure mode; the skill's rule-based selection removes it structurally. Variance reduction will be quantifiable once more reps use the skill at volume.
 - **Institutional knowledge accessible by invocation.** A new SDR doesn't have to read all 615 lines of the Enterprise Sales Intelligence doc before their first prospect call — they can ask the skill questions as they come up.
 - **Composable stack.** Each upstream implementation (master strategy, ICPs, messaging, CRM ops) gets more leverage because the skill makes them invokable rather than just readable.
 
@@ -143,7 +143,7 @@ A naive "all-in-one" skill would load all six references for both cases; this on
 
 ## 9. Resume Bullet (Published)
 
-> Designed and shipped a packaged Claude skill (`outbound-sales-agent`) that encapsulates a B2B SaaS company's complete outbound sales workflow — ICP classification, template selection, sequence management, CRM logging, competitive plays — behind a single natural-language interface, using progressive-disclosure architecture (minimal core SKILL.md + 6 reference files loaded on demand) to keep context costs low while preserving deep subsystem knowledge; compressed per-prospect prep time ~90% (30 min → 3 min) and eliminated template-selection variance across the SDR team.
+> Designed and shipped a packaged Claude skill (`outbound-sales-agent`) that encapsulates a B2B SaaS company's complete outbound sales workflow — ICP classification, template selection, sequence management, CRM logging, competitive plays — behind a single natural-language interface, using progressive-disclosure architecture (minimal core SKILL.md + per-subsystem reference files loaded on demand) to keep context costs low while preserving deep subsystem knowledge; compressed per-prospect prep time ~90% (30 min → 3 min) for my own use and removes template-selection variance across the team by design.
 
 ---
 

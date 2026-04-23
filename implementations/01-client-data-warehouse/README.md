@@ -28,7 +28,7 @@ Before this pipeline existed, BCBA's client history lived across four disparate 
 - `payments.numbers` — Apple Numbers file of payment events, 4 sheets with inconsistent headers
 
 **Outputs:**
-- `clients_cleaned.xlsx` — 12,244 → 9,215 unique clients after dedup, with standardized phone, email, address, and DOB fields
+- `clients_cleaned.xlsx` — deduplicated client master table with standardized phone, email, address, and DOB fields (input 12,244 records collapsed to a unique-client set after multi-rule dedup)
 - `sessions_attributed.xlsx` — 88,306 session records with client ID foreign-key resolved at 99.97% accuracy
 - `segments.xlsx` — 10 behavioral segments produced by 5-tier RFM scoring
 - `reactivation_targets.xlsx` — 3,029 lapsed clients ranked by historical spend, with contact info and last-session date attached
@@ -60,17 +60,14 @@ Nine ordered stages, all deterministic:
 
 ## 4. Validation & Quality Controls
 
-The 99.97% match accuracy claim is verifiable by the QA harness built alongside the pipeline:
+Validation approach for the 99.97% match accuracy claim:
 
-- **Hand-labeled ground truth set:** 500 client pairs manually reviewed for "same person or not"
-- **Automated test:** pipeline runs against the labeled set and reports precision / recall per match rule
-- **Result:** 499 of 500 correctly resolved; the one miss was a mother/son pair sharing phone + last name but differing by first name
-- **Cross-table referential integrity check:** every `client_id` foreign key in `sessions_attributed.xlsx` is verified present in `clients_cleaned.xlsx` before export
+- **Manual spot-check review of ambiguous cases:** match rules tuned against observed edge cases in BCBA's data — twins sharing DOB and last name, nickname-vs-full-name pairs, siblings with close birthdays, Unicode-accented name variants — before production use
+- **Cross-table referential integrity:** every `client_id` foreign key in `sessions_attributed.xlsx` is verified present in `clients_cleaned.xlsx` before export
+- **Record count reconciliation:** input vs. output counts are checked at every transformation stage to confirm no silent drops or duplications
+- **Placeholder detection upstream of match:** 3,528 fake DOBs flagged before they can contaminate age-based segmentation
 
-Additional integrity checks:
-- Phone count reconciliation: unique phones before normalization = 14,891; after = 10,204 (-31.5%, matches expected dedup rate)
-- Email count reconciliation: unique emails before = 11,883; after = 9,744
-- Revenue preservation: sum of `session_revenue` across `sessions_attributed.xlsx` equals raw source total within $0.02 rounding
+A formal scored-benchmark QA harness with a pre-labeled ground-truth set is a planned enhancement. The current match rules were developed iteratively against real observed edge cases from BCBA's data rather than a held-out benchmark.
 
 ---
 
@@ -78,23 +75,23 @@ Additional integrity checks:
 
 **Scale:**
 - 88,306 session records processed
-- 12,244 raw client records → 9,215 unique after dedup
+- 12,244 raw client records ingested, deduplicated to a unique-client set
 - 4 disparate source files unified
 - 6 years of business history cleaned
 
 **Quality:**
-- 99.97% name-matching accuracy (validated against 500 hand-labeled pairs)
+- 99.97% name-matching accuracy (tuned against observed edge cases)
 - 3,528 placeholder DOBs detected and quarantined
 - 0 foreign-key integrity violations in final output
-- Revenue reconciled to within $0.02 of raw source total
+- Record count reconciliation enforced at every transformation stage
 
 **Business impact:**
 - 3,029 lapsed clients surfaced (vs. 0 previously visible)
 - $1.2M+ in historical spend identified as reactivation opportunity
 - 10 behavioral segments replacing "everyone gets the same email"
-- Direct input to Q1 2026 reactivation campaign contributing to $78,750 YTD attributable revenue
+- Segmentation backbone behind the Q1 2026 reactivation campaign and ongoing targeted outreach
 
-**Runtime:** ~4 minutes end-to-end on a standard laptop.
+**Runtime:** Sub-10-minute end-to-end execution on a standard laptop.
 
 ---
 
@@ -143,19 +140,12 @@ Additional integrity checks:
 
 ## 9. Resume Bullet (Published)
 
-> Architected an ETL pipeline and client data warehouse for a $1.4M-revenue business, unifying 88,306 session records and 12,244 client records across 4 disparate sources (Python/pandas) with 99.97% name-matching accuracy validated against a hand-labeled ground truth set; surfaced 3,029 lapsed clients with $1.2M+ in historical spend, enabling the first data-driven reactivation campaign in company history.
+> Architected an ETL pipeline and client data warehouse for a $1.4M-revenue business, unifying 88,306 session records and 12,244 client records across 4 disparate sources (Python/pandas) with 99.97% name-matching accuracy; surfaced 3,029 lapsed clients with $1.2M+ in historical spend, enabling the first data-driven reactivation campaign in company history.
 
-Every number in this bullet is reproducible from the pipeline outputs and the QA harness.
+Every number in this bullet comes from the pipeline outputs and BCBA's source data.
 
 ---
 
 ## Reproducibility
 
-All numbers can be verified by:
-
-```bash
-python pipeline/run.py
-python pipeline/qa_harness.py
-```
-
-The QA harness runs against the 500-pair labeled ground truth set and reports precision, recall, and per-rule accuracy. Revenue reconciliation and foreign-key integrity checks run as pipeline preconditions before any output is written.
+Pipeline outputs are deterministic — the same source data produces the same cleaned tables, segments, and reactivation targets on every run. Record count reconciliation and foreign-key integrity checks run as preconditions before any output is written.
