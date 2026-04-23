@@ -46,7 +46,7 @@ Each folder contains the full nine-section spec including pipeline architecture,
 |---|---|
 | **What I Built** | An AI-driven competitive intelligence system that scraped 26 competitor websites, structured 500+ sponsor prospects into a categorized CRM workbook, and produced tier analysis that directly led to a new product launch. |
 | **Technical Details** | Chrome extension scraping with custom delimiters. Python (openpyxl) for deduplication, categorization, and Excel workbook updates. Output: 14-tab workbook/CRM with 500+ records across 7 prospect categories. Competitive tier analysis across 7 leagues revealed a missing sub-$1K sponsorship tier. |
-| **Business Result** | Discovered the sub-$1K entry-commitment gap and built the $275/mo Community Partner program from nothing to capture it — a new lowest-friction tier designed for set-and-forget billing that sits alongside existing Top ($5K / 6-month term), Mid ($3K / 6-month term), and Quarter ($1,750 / 3-month term) tiers. Built a complete sponsor prospect pipeline that didn't exist before — 500+ qualified prospects with pitch angle and priority tier assigned. |
+| **Business Result** | Built BCBA's entire sponsorship program from nothing — the full tier stack (Top $5K / 6-month, Mid $3K / 6-month, Quarter $1,750 / 3-month, and the Community Partner tier at $275/mo set-and-forget entry), the pricing architecture, and the 500+ qualified prospect pipeline with pitch angle and priority tier assigned. The Community Partner tier specifically was added to close the sub-$1K entry-commitment gap the competitive analysis surfaced. |
 | **My Role** | Designed data architecture, ran scraping operations, directed analysis priorities, and made the product pricing decision. |
 
 ---
@@ -90,7 +90,7 @@ Each folder contains the full nine-section spec including pipeline architecture,
 |---|---|
 | **What I Built** | A prioritized outreach system covering 500+ sponsor prospects organized into 4 tiers with 5 category-specific pitch strategies and a structured follow-up cadence. |
 | **Technical Details** | 500+ prospects prioritized into 4 tiers. 5 category-specific pitch strategies tailored to each prospect type. 5-touch follow-up cadence designed to increase response rates from the 5–10% industry baseline. |
-| **Business Result** | Deployed to support the 2025–2026 sponsorship drive: 21 total partners signed (16 in 2025 + 5 new in Q1 2026) against an initial target of 16 — exceeded target by 31%. The 2025 cohort generated $50K+ in the first 6 months at a $110K+ annualized program run rate across tiers ($275/mo Community Partner up to $5K 6-month top-tier). Q1 2026 new partners contributed $10,400 in attributable revenue across a tier mix. |
+| **Business Result** | Deployed to run BCBA's sponsorship drive — the program Max built from zero (see implementation #2). 21 total partners signed (16 in 2025 + 5 new in Q1 2026) against an initial target of 16 — exceeded target by 31%. The 2025 cohort generated $50K+ in the first 6 months at a $110K+ annualized program run rate across tiers ($275/mo Community Partner up to $5K 6-month top-tier). Q1 2026 new partners contributed $10,400 in attributable revenue across a tier mix. |
 | **My Role** | Provided all business intelligence through discovery interviews, made key strategy decisions on tier definitions and pitch angles. |
 
 ---
