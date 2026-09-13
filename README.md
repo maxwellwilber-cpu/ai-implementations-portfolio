@@ -2,7 +2,7 @@
 
 Maxwell Wilber | Seattle, WA | [LinkedIn](https://linkedin.com/in/maxwellwilber)
 
-Between early 2025 and mid 2026 I built AI systems for two businesses. Beach City Baseball Academy is a youth sports facility that did $1.41M in 2025. RevSend is a B2B SaaS gifting platform. I worked with both as an independent consultant while teaching myself the technical side, and this is the record of what came out of it.
+Between early 2025 and mid 2026 I built AI systems for two businesses. Beach City Baseball Academy is a youth sports facility that did $1.41M in 2025. RevSend is a B2B SaaS gifting platform. I worked with BCBA as an independent consultant and with RevSend as a contracted employee handling customer success and automations, teaching myself the technical side as I went, and this is the record of what came out of it.
 
 ## How this is organized
 
@@ -12,10 +12,10 @@ Ten systems, then nine strategy assets. If you want to know what I can build, st
 
 ## Start here
 
-Two of these have public code you can clone and run:
+Three of these have public code you can clone and run:
 
-- **[client-data-cleaner](https://github.com/maxwellwilber-cpu/client-data-cleaner)** is a working version of the BCBA data warehouse below, running on generated data. 100% matching precision measured against known ground truth, zero wrong merges.
-- **[checkpoint](https://github.com/maxwellwilber-cpu/checkpoint)** validates AI output against declared rules. It catches invented numbers and citations that point nowhere.
+- **[client-data-cleaner](https://github.com/maxwellwilber-cpu/client-data-cleaner)** is a working version of the BCBA data warehouse below, running on generated data. 100% matching precision against known ground truth, zero wrong merges.
+- **[checkpoint](https://github.com/maxwellwilber-cpu/checkpoint)** validates AI output against declared rules. It catches invented numbers, citations that point nowhere, and a declared path that matches nothing so a ruleset cannot silently degrade to checking nothing.
 
 And one has a measured before and after: **cs-health-report** scored 100% on its eval set against 83.8% for baseline Claude without it. That's the number I'd point at first.
 
@@ -43,7 +43,7 @@ I built a pipeline that unified all of it. 88,306 session records and 12,244 cli
 
 RFM scoring on top of that produced behavioral segments and surfaced **3,029 lapsed clients with $1.2M+ in historical spend**, ranked and with contact info attached. That became the reactivation campaign. The bigger win was that the business went from unable to ask behavioral questions at all to answering new ones off the same clean dataset.
 
-A generalized version is public at [client-data-cleaner](https://github.com/maxwellwilber-cpu/client-data-cleaner), and that one **is** formally benchmarked: 100% precision and zero wrong merges against known ground truth, reproducible with one command. The BCBA work came first and was never scored that way. Building the benchmark afterwards is what convinced me the rules held up. Full spec: [implementations/01-client-data-warehouse/](implementations/01-client-data-warehouse/)
+A generalized version is public at [client-data-cleaner](https://github.com/maxwellwilber-cpu/client-data-cleaner), and that one **is** formally benchmarked: 100% precision and zero wrong merges against known ground truth, with the harness in the repo so anyone can re-run it. The BCBA work came first and was never scored that way. Building the benchmark afterwards is what convinced me the rules held up. Full spec: [implementations/01-client-data-warehouse/](implementations/01-client-data-warehouse/)
 
 ### Outbound Sales Agent skill (RevSend)
 
@@ -140,7 +140,7 @@ The thread through most of it: figure out what the business actually needs, desi
 - **[client-data-cleaner](https://github.com/maxwellwilber-cpu/client-data-cleaner)** turns messy multi-source customer exports into one clean master list. Every merge logged, accuracy measured against ground truth.
 - **[checkpoint](https://github.com/maxwellwilber-cpu/checkpoint)** validates AI output against rules you declare. Catches invented numbers, bad citations and placeholder text.
 - **[fas-case-study](https://github.com/maxwellwilber-cpu/fas-case-study)** is a 27 node AI financial analysis pipeline with 73 validation checks, built on Vellum. 96.2/100 quality score on real client data.
-- **[evs](https://github.com/maxwellwilber-cpu/evs)** is the Python framework that validates the FAS pipeline. 43 tests, caught 12 of 12 planted errors plus 3 real ones.
+- **[evs](https://github.com/maxwellwilber-cpu/evs)** is the Python framework that validates the FAS pipeline. 43 tests, caught 12 of 12 planted errors plus 2 real ones.
 
 ---
 

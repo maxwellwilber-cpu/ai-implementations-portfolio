@@ -1,4 +1,4 @@
-# Enterprise Sales Intelligence System — Master Strategy Engine
+# Enterprise Sales Intelligence System. Master Strategy Engine
 
 **Built for:** RevSend (B2B SaaS corporate gifting platform)
 **Deployed:** 2025
@@ -11,7 +11,7 @@
 
 A 615-line operational source of truth consolidating six fragmented sales assets into a single document covering ideal customer profiles, messaging frameworks, competitive intelligence, sequence rules, and CRM operating procedures. Designed to serve as the onboarding document for new SDR hires as the RevSend team scales.
 
-**Problem solved:** RevSend's sales knowledge was distributed across six files in six different formats — a 52-slide competitive deck, a 47-slide client use cases deck, a 27,000-word cold outreach playbook, 125+ competitor case study URLs, a 102-company prospect research spreadsheet, and a collection of ad-hoc messaging templates. An SDR preparing for a prospect call had to open six tabs, cross-reference manually, and reconstruct the buyer story on the fly. New-hire onboarding required weeks of this manual synthesis before a rep could run their own outreach — the source-of-truth doc collapses that into a guided reading cycle against a single searchable file.
+**Problem solved:** RevSend's sales knowledge was distributed across six files in six different formats, a 52-slide competitive deck, a 47-slide client use cases deck, a 27,000-word cold outreach playbook, 125+ competitor case study URLs, a 102-company prospect research spreadsheet, and a collection of ad-hoc messaging templates. An SDR preparing for a prospect call had to open six tabs, cross-reference manually, and reconstruct the buyer story on the fly. New-hire onboarding required weeks of this manual synthesis before a rep could run their own outreach, the source-of-truth doc collapses that into a guided reading cycle against a single searchable file.
 
 **Users:** RevSend SDRs and account managers. Serves as the onboarding reference document as the team scales.
 
@@ -28,7 +28,7 @@ A 615-line operational source of truth consolidating six fragmented sales assets
 - Ad-hoc template collection from prior SDR work
 
 **Single output:**
-- `revsend-sales-intelligence.md` — 615-line structured markdown with 10 interconnected sections and cross-references
+- `revsend-sales-intelligence.md`. 615-line structured markdown with 10 interconnected sections and cross-references
 
 ---
 
@@ -36,7 +36,7 @@ A 615-line operational source of truth consolidating six fragmented sales assets
 
 Four phases executed across multiple Claude sessions with context-transfer documents passing state between sessions:
 
-**Phase 1 — Extraction.** Each source file processed independently to pull out its raw content into structured chunks:
+**Phase 1. Extraction.** Each source file processed independently to pull out its raw content into structured chunks:
 - Competitive deck → per-competitor capability tables + claim statements
 - Client deck → 22-row client story table (name, industry, problem, solution, result)
 - Case study URLs → validation notes confirming or disputing claim statements
@@ -46,13 +46,13 @@ Four phases executed across multiple Claude sessions with context-transfer docum
 
 Each phase-1 output is its own markdown fragment, stored as an intermediate artifact.
 
-**Phase 2 — Cross-referencing.** The intermediate fragments are joined against each other to surface structural relationships:
+**Phase 2. Cross-referencing.** The intermediate fragments are joined against each other to surface structural relationships:
 - ICP firmographic clusters emerge from the 102-company research and the 22 client stories
 - Messaging theory propositions get paired with the template fragments that exemplify them
 - Competitive claims get paired with their validating (or contradicting) case study URLs
 - Client stories get tagged by which competitive weakness they best exploit
 
-**Phase 3 — Synthesis.** The cross-referenced relationships are collapsed into the 10-section architecture of the final document:
+**Phase 3. Synthesis.** The cross-referenced relationships are collapsed into the 10-section architecture of the final document:
 1. Executive summary and positioning
 2. Five-tier ICP framework
 3. Messaging framework (30+ templates × ICP × touch point)
@@ -64,13 +64,13 @@ Each phase-1 output is its own markdown fragment, stored as an intermediate arti
 9. Gift send protocols
 10. Appendix: reference tables and source links
 
-**Phase 4 — Validation.** Every quantified claim in the final document is traced back to its source. Every competitive claim has a supporting case study URL. Every client story has its slide-deck source. Every template has its playbook lineage.
+**Phase 4. Validation.** Every quantified claim in the final document is traced back to its source. Every competitive claim has a supporting case study URL. Every client story has its slide-deck source. Every template has its playbook lineage.
 
 ---
 
 ## 4. Architecture of the Output
 
-The 10 sections are not independent — they are deliberately cross-referenced so a reader can traverse the document the way a live sales conversation actually moves.
+The 10 sections are not independent, they are deliberately cross-referenced so a reader can traverse the document the way a live sales conversation actually moves.
 
 **Example cross-reference chain:**
 - An SDR prepping for a Fortune 500 HR-tech company
@@ -92,7 +92,7 @@ What was previously a 30-minute prep session across six tabs becomes a 5-minute 
 - 10 interconnected sections
 - 22 client stories indexed
 - 5 competitor battle cards
-- 30+ messaging template variants mapped across 5 ICP × 6–7 touch-point combinations
+- 30+ messaging template variants mapped across 5 ICP × 6-7 touch-point combinations
 - 125+ case study URLs traced as claim validators
 
 **Adoption:**
@@ -111,10 +111,10 @@ What was previously a 30-minute prep session across six tabs becomes a 5-minute 
 
 **What makes this non-obvious:**
 
-- **Multi-session orchestration with explicit context transfer.** A single AI session cannot hold all six sources plus the relational structure in memory. The pipeline uses explicit context-transfer documents — each phase's output is designed to be loaded as the input context for the next phase, with the state of cross-references captured as structured markdown rather than conversational memory. This is the same pattern used in long-running agent workflows; most ad-hoc sales-enablement docs are produced in one session and lose structural rigor as context fills.
-- **Claim validation, not just extraction.** Every competitive claim in the output has a case-study URL paired to it as an independent validator. The extraction phase pulls the claim; the cross-referencing phase pairs it with its validator; claims that can't be paired are flagged for human review rather than published. A senior sales leader reading the output will notice which claims are evidence-backed versus assertion-only — the document surfaces this distinction explicitly.
-- **Cross-reference chains are built, not implied.** The 10 sections aren't just "a table of contents" — they're structured so a reader can traverse a real sales scenario (prospect → ICP → story → competitor → messaging → sequence) in under 5 minutes. This traversal was designed before the sections were written, not discovered afterward.
-- **Source of truth behavior, not summary behavior.** The goal wasn't "make a shorter version of everything." The goal was "produce the single document a rep opens when they need to act on a prospect." That framing dictated the 10-section structure and the cross-reference architecture — a summary would have lost the cross-references.
+- **Multi-session orchestration with explicit context transfer.** A single AI session cannot hold all six sources plus the relational structure in memory. The pipeline uses explicit context-transfer documents, each phase's output is designed to be loaded as the input context for the next phase, with the state of cross-references captured as structured markdown rather than conversational memory. This is the same pattern used in long-running agent workflows; most ad-hoc sales-enablement docs are produced in one session and lose structural rigor as context fills.
+- **Claim validation, not just extraction.** Every competitive claim in the output has a case-study URL paired to it as an independent validator. The extraction phase pulls the claim; the cross-referencing phase pairs it with its validator; claims that can't be paired are flagged for human review rather than published. A senior sales leader reading the output will notice which claims are evidence-backed versus assertion-only, the document surfaces this distinction explicitly.
+- **Cross-reference chains are built, not implied.** The 10 sections aren't just "a table of contents", they're structured so a reader can traverse a real sales scenario (prospect → ICP → story → competitor → messaging → sequence) in under 5 minutes. This traversal was designed before the sections were written, not discovered afterward.
+- **Source of truth behavior, not summary behavior.** The goal wasn't "make a shorter version of everything." The goal was "produce the single document a rep opens when they need to act on a prospect." That framing dictated the 10-section structure and the cross-reference architecture, a summary would have lost the cross-references.
 
 **What would break with a less-rigorous approach:**
 
@@ -135,8 +135,8 @@ What was previously a 30-minute prep session across six tabs becomes a 5-minute 
 ## 7. Deployment Status
 
 - **Status:** Production. In active reference use by the RevSend SDR team since 2025.
-- **Maintenance cadence:** Refreshed quarterly as new case studies, ICP learnings, and competitive intel accumulate. The structure is designed to absorb new content without rewrites — a new competitor gets a new battle card; a new client story gets a new row in the lookup.
-- **Maintainer:** Max Wilber for structural updates; RevSend SDR team for in-line additions.
+- **Maintenance cadence:** Refreshed quarterly as new case studies, ICP learnings, and competitive intel accumulate. The structure is designed to absorb new content without rewrites, a new competitor gets a new battle card; a new client story gets a new row in the lookup.
+- **Maintainer:** I for structural updates; RevSend SDR team for in-line additions.
 - **Primary consumer:** Active SDRs plus every new SDR onboarded after 2025.
 
 ---
@@ -160,4 +160,4 @@ Every number in this bullet is verifiable from the source documents and the fina
 
 ## Reproducibility
 
-The multi-session extraction → cross-referencing → synthesis → validation pipeline is documented in the repo as a set of context-transfer artifacts. Each phase's output is preserved so the synthesis can be audited — a senior reviewer can trace any claim in the final document back through its validation phase to the source material.
+The multi-session extraction → cross-referencing → synthesis → validation pipeline is documented in the repo as a set of context-transfer artifacts. Each phase's output is preserved so the synthesis can be audited, a senior reviewer can trace any claim in the final document back through its validation phase to the source material.

@@ -12,7 +12,7 @@ An automated audit of RevSend's HubSpot instance. It analyzed 612 contacts, cate
 
 **The problem.** The outbound SDR team had six months of CRM drift behind it: inconsistent lead statuses, contacts with no categorization at all, voicemails logged in whatever format the rep felt like, and duplicate records created when people re-imported prospect lists. Cleaning that by hand is roughly eight hours of SDR time, and nobody had eight hours.
 
-**Who used it.** The RevSend SDR team, and me as account manager. The cleaned-up CRM state became the foundation for the Outbound Sales Agent skill. That agent cannot reason usefully about a prospect if the underlying record is wrong.
+**Who used it.** The RevSend SDR team. I was at RevSend as a contracted employee handling customer success and automations. The cleaned-up CRM state became the foundation for the Outbound Sales Agent skill. That agent cannot reason usefully about a prospect if the underlying record is wrong.
 
 ---
 
@@ -25,7 +25,7 @@ An automated audit of RevSend's HubSpot instance. It analyzed 612 contacts, cate
 
 **Out:**
 - 612 contacts audited and sorted into three groups: 507 already fine, 43 needing a status correction, 62 needing a status assigned
-- 550 contacts batch updated, run as 55 batches of 10, with 0 failures
+- 550 contacts batch updated, which is the 507 plus the 43 corrections, run as 55 batches of 10, with 0 failures
 - 54 standardized voicemail activity notes created with contact associations
 - 11 duplicate-contact errors resolved automatically during the run
 - 4 structural duplicates flagged for manual merge
@@ -38,7 +38,7 @@ An automated audit of RevSend's HubSpot instance. It analyzed 612 contacts, cate
 1. **Schema read.** `get_properties` through the HubSpot MCP returns the current contact schema: which properties exist, their types, their valid enum values. This is what the update step writes against.
 2. **Audit.** `search_crm_objects` with filter groups paginates through all 612 contacts, pulling the property set relevant to the audit: lifecycle stage, lead status, recent activity, creation source.
 3. **Categorization.** Each contact is checked against the target state. Does it have a lead status? Does that status match its observable activity history? Is there recent activity that contradicts it? That produces the three groups above.
-4. **Batch updates.** The 550 contacts needing changes are written through `manage_crm_objects` in batches of 10.
+4. **Batch updates.** 550 contacts are written through `manage_crm_objects` in batches of 10. That is the 507 already in an acceptable state plus the 43 corrections, with lead status written explicitly so the whole book carries one taxonomy instead of a mix of set and inferred values. The 62 needing a status assigned are handled separately, because giving a status to a contact that has never had one is a judgment call, not a standardization.
 5. **Error resolution.** Create operations that collide with an existing record return a "Contact already exists" error. Those were caught, the existing contact ID retrieved, and the operation redirected to update that record instead of creating a new one. 11 contacts resolved this way with no manual work.
 6. **Count check.** Final category counts were cross-referenced against the total to confirm nothing was lost, skipped or double counted.
 
@@ -59,7 +59,7 @@ An automated audit of RevSend's HubSpot instance. It analyzed 612 contacts, cate
 | | |
 |---|---|
 | Contacts audited | 612 |
-| Contacts batch updated | 550 |
+| Contacts batch updated | 550 (507 + 43) |
 | Batches | 55 |
 | Batch failures | **0** |
 | Activity notes created | 54 |
