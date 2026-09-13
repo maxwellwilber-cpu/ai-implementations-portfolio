@@ -13,7 +13,7 @@ An ETL pipeline and governed client data platform that unifies BCBA's first six 
 
 Before this pipeline existed, BCBA's client history lived across four disparate source files — two CSV exports, two Apple Numbers files — with inconsistent formats, duplicates, placeholder birthdates, and no way to cross-reference a client's booking history to their contact record. Revenue attribution was by intuition, not data; segmentation was impossible because there was no clean person-level record to segment against.
 
-**Problem solved:** A business generating ~$1.4M/year in sessions had no single source of truth for who its clients were, what they'd spent, or who had lapsed. Any data-driven question — "which clients have we lost in the last 12 months?", "who are our highest-LTV segments?", "what does retention look like by cohort?" — was unanswerable until someone cleaned the data and built a governed master.
+**Problem solved:** A business generating ~$1.41M/year in sessions had no single source of truth for who its clients were, what they'd spent, or who had lapsed. Any data-driven question — "which clients have we lost in the last 12 months?", "who are our highest-LTV segments?", "what does retention look like by cohort?" — was unanswerable until someone cleaned the data and built a governed master.
 
 **Users:** BCBA ownership and the front desk GM. The platform feeds directly into the 2026 reactivation campaign and is the analytical backbone for any future behavioral question the business decides to investigate.
 
@@ -29,7 +29,7 @@ Before this pipeline existed, BCBA's client history lived across four disparate 
 
 **Governed master dataset (always available):**
 - `clients_cleaned.xlsx` — deduplicated client master table with standardized phone, email, address, and DOB fields (input 12,244 records collapsed to a unique-client set after multi-rule dedup)
-- `sessions_attributed.xlsx` — 88,306 session records with client ID foreign-key resolved at 99.97% accuracy
+- `sessions_attributed.xlsx`, 88,306 session records with the client ID foreign key resolved
 
 **Analytical outputs produced to date (each is a use case built on top of the master dataset):**
 - `segments.xlsx` — RFM scoring applied to produce named behavioral segments (Champions, Loyal, At Risk, Lost, etc.); the segmentation criteria are configurable, not fixed
@@ -63,7 +63,7 @@ Nine ordered stages, all deterministic:
 
 ## 4. Validation & Quality Controls
 
-Validation approach for the 99.97% match accuracy claim:
+How the matching was checked:
 
 - **Manual spot-check review of ambiguous cases:** match rules tuned against observed edge cases in BCBA's data — twins sharing DOB and last name, nickname-vs-full-name pairs, siblings with close birthdays, Unicode-accented name variants — before production use
 - **Cross-table referential integrity:** every `client_id` foreign key in `sessions_attributed.xlsx` is verified present in `clients_cleaned.xlsx` before export
@@ -83,7 +83,7 @@ A formal scored-benchmark QA harness with a pre-labeled ground-truth set is a pl
 - 6 years of business history cleaned
 
 **Quality:**
-- 99.97% name-matching accuracy (tuned against observed edge cases)
+- Matching rules tuned against observed edge cases, with ambiguous pairs reviewed by hand
 - 3,528 placeholder DOBs detected and quarantined
 - 0 foreign-key integrity violations in final output
 - Record count reconciliation enforced at every transformation stage
@@ -105,14 +105,14 @@ A formal scored-benchmark QA harness with a pre-labeled ground-truth set is a pl
 - **Date-proximity name matching.** Most name-matching libraries do exact-match or fuzzy-match, not both with date disambiguation. Handling the ±1 day DOB tolerance surfaced ~80 clients who would otherwise have been treated as duplicates (twins, siblings with shared nickname + close birthdays).
 - **Unicode normalization before match.** `Jose`, `José`, and `José` (different encodings of the accented e) all collapse to the same canonical form. Catches ~30 duplicates that string-equality would miss.
 - **Placeholder DOB detection.** Rather than trusting every DOB field, the pipeline actively identifies placeholder patterns and flags them. Age-based segmentation built on placeholder DOBs would have been silently wrong.
-- **Tuned against real edge cases, not generic fuzzy matching.** The 99.97% match accuracy was developed iteratively against BCBA's actual messy data — twins with shared DOB and last name, Unicode-accented variants, nickname-vs-full-name pairs — rather than tuned against a synthetic benchmark. A senior data engineer will ask "how did you validate?" — the honest answer is spot-check review of ambiguous cases; a formal scored-benchmark harness is a planned enhancement.
+- **Tuned against real edge cases, not generic fuzzy matching.** The rules were developed iteratively against BCBA's actual data: twins sharing a last name and date of birth, accented characters, nicknames against full names. There was no scored benchmark on this project. Ambiguous pairs were reviewed by hand, which is a reasonable way to build the rules and a weak way to prove them. I built [client-data-cleaner](https://github.com/maxwellwilber-cpu/client-data-cleaner) afterwards specifically to close that gap, and it measures the same approach against known ground truth: 100% precision, zero wrong merges, reproducible with one command.
 - **Record count reconciliation as the safety net.** Input vs. output counts are checked at every transformation stage to confirm no silent drops or duplications. Any transform that unexpectedly changes the cardinality fails this check and halts the pipeline rather than producing output of unknown integrity.
 
 **What would break with a less-rigorous approach:**
 
 - Treating the four sources as joinable without cleaning would produce 5–10% false-duplicate merges
 - Trusting DOBs without placeholder detection would produce a "children's program" segment containing 3,528 people from 1900 and 1969
-- Without the iterative tuning against real edge cases, fuzzy matching libraries alone hit ~95–97% accuracy on data this messy; the ±1 day DOB rule and Unicode normalization are what push the number to 99.97%
+- Off-the-shelf fuzzy matching alone leaves a lot on the table with data this messy. The rules that did the most work here were the one-day date-of-birth tolerance, which catches keystroke errors, and Unicode normalization for accented names
 
 **Senior-engineer design choices worth flagging:**
 
@@ -143,7 +143,7 @@ A formal scored-benchmark QA harness with a pre-labeled ground-truth set is a pl
 
 ## 9. Resume Bullet (Published)
 
-> Architected an ETL pipeline and governed client data platform for a $1.4M-revenue business, unifying 88,306 session records and 12,244 client records across 4 disparate sources (Python/pandas) with 99.97% name-matching accuracy; the platform powers RFM segmentation, cohort retention analysis, and the first data-driven reactivation campaign in company history (3,029 lapsed clients with $1.2M+ in historical spend surfaced).
+> Built an ETL pipeline and governed client data platform for a $1.41M-revenue business, unifying 88,306 session records and 12,244 client records across 4 disparate sources in Python and pandas, with tiered identity matching and every merge logged to its rule; the platform powers RFM segmentation, cohort retention analysis, and the first data-driven reactivation campaign in company history, surfacing 3,029 lapsed clients with $1.2M+ in historical spend.
 
 Every number in this bullet comes from the pipeline outputs and BCBA's source data.
 

@@ -39,11 +39,11 @@ I built a three case eval harness with pypdf assertion grading to check it. **10
 
 Six years of client history lived across four files that didn't talk to each other. Two CSV exports and two Apple Numbers files, with inconsistent formats, duplicate people, and fake birthdays. A business doing $1.41M a year could not answer "which clients have we lost."
 
-I built a pipeline that unified all of it. 88,306 session records and 12,244 client records ingested. Phone numbers normalized across six separate columns, emails deduplicated, 40+ state format variations collapsed, 3,528 placeholder birthdays flagged rather than trusted. A name matching engine resolves the same person across files despite nicknames, typos and maiden names, using tiered rules with confidence scores. Sessions link to the right client at **99.97% accuracy**.
+I built a pipeline that unified all of it. 88,306 session records and 12,244 client records ingested. Phone numbers normalized across six separate columns, emails deduplicated, 40+ state format variations collapsed, 3,528 placeholder birthdays flagged rather than trusted. A name matching engine resolves the same person across files despite nicknames, typos and maiden names, using tiered rules that each carry a confidence score, so every merge is traceable to the rule that made it. Ambiguous pairs were reviewed by hand rather than guessed at, which is the honest description of how it was checked: there was no scored benchmark on this project.
 
 RFM scoring on top of that produced behavioral segments and surfaced **3,029 lapsed clients with $1.2M+ in historical spend**, ranked and with contact info attached. That became the reactivation campaign. The bigger win was that the business went from unable to ask behavioral questions at all to answering new ones off the same clean dataset.
 
-A generalized version with public code is at [client-data-cleaner](https://github.com/maxwellwilber-cpu/client-data-cleaner). Full spec: [implementations/01-client-data-warehouse/](implementations/01-client-data-warehouse/)
+A generalized version is public at [client-data-cleaner](https://github.com/maxwellwilber-cpu/client-data-cleaner), and that one **is** formally benchmarked: 100% precision and zero wrong merges against known ground truth, reproducible with one command. The BCBA work came first and was never scored that way. Building the benchmark afterwards is what convinced me the rules held up. Full spec: [implementations/01-client-data-warehouse/](implementations/01-client-data-warehouse/)
 
 ### Outbound Sales Agent skill (RevSend)
 
