@@ -1,144 +1,101 @@
-# CRM Audit & Batch Remediation — HubSpot API Automation
+# CRM Audit and Batch Remediation (HubSpot API)
 
-**Built for:** RevSend (B2B SaaS corporate gifting platform)
+**Built for:** RevSend, a B2B SaaS corporate gifting platform
 **Deployed:** 2025
-**Author:** Maxwell Wilber
-**Stack:** Claude AI + HubSpot MCP server, HubSpot CRM API (REST), batch operations with error-tolerant retry
+**Stack:** Claude with the HubSpot MCP server, HubSpot CRM REST API, batch operations
 
 ---
 
-## 1. Identity & Purpose
+## What it is
 
-An automated CRM audit and batch remediation system that programmatically analyzed 612 HubSpot contacts, categorized them by engagement status, and executed batch API updates to standardize lead statuses, enrich contact data, and create structured activity notes — all with 0 failures across 550 update operations.
+An automated audit of RevSend's HubSpot instance. It analyzed 612 contacts, categorized them by engagement status, and executed batch updates to standardize lead statuses and create structured activity notes. 550 update operations ran with zero failures.
 
-**Problem solved:** RevSend's outbound SDR team had accumulated six months of CRM drift — inconsistent lead statuses, orphaned contacts with no categorization, voicemail activity logged inconsistently or not at all, and duplicate contacts created when reps re-imported prospects. A manual audit would have taken an SDR ~8 hours, and the team didn't have 8 hours to spare. The automation completed the same work in ~15 minutes with a verifiable audit trail.
+**The problem.** The outbound SDR team had six months of CRM drift behind it: inconsistent lead statuses, contacts with no categorization at all, voicemails logged in whatever format the rep felt like, and duplicate records created when people re-imported prospect lists. Cleaning that by hand is roughly eight hours of SDR time, and nobody had eight hours.
 
-**Users:** The RevSend SDR team and Max as the account manager. The standardized CRM state became the operational foundation for the Outbound Sales Agent Skill (implementation #12) — that agent cannot reliably reason about prospects if the underlying CRM data is inconsistent.
-
----
-
-## 2. Input → Output
-
-**Inputs:**
-- 612 HubSpot contact records across the RevSend SDR team's managed pipeline
-- Existing HubSpot property schema (lead status taxonomy, activity types, standard contact fields)
-- An operational definition of the target end-state (every contact has a defined lead status; every voicemail has a standardized note; no duplicates)
-
-**Outputs:**
-- 612 contacts audited and categorized into three buckets: 507 already in acceptable state, 43 requiring status correction, 62 requiring assignment
-- 550 contacts batch-updated with corrected properties (55 batches of 10, 0 failures)
-- 43 contacts with corrected lead status
-- 54 standardized voicemail activity notes created with proper contact associations
-- 4 duplicates identified and flagged for manual merge (cannot be auto-merged safely)
-- A validation report reconciling 507 + 43 + 62 = 612 total, confirming no records were lost, skipped, or double-counted during the sweep
+**Who used it.** The RevSend SDR team, and me as account manager. The cleaned-up CRM state became the foundation for the Outbound Sales Agent skill. That agent cannot reason usefully about a prospect if the underlying record is wrong.
 
 ---
 
-## 3. Pipeline Architecture
+## Input and output
 
-Six ordered stages:
+**In:**
+- 612 HubSpot contact records across the SDR team's pipeline
+- The existing HubSpot property schema: lead status taxonomy, activity types, standard contact fields
+- A defined target state, meaning every contact carries a lead status, every voicemail has a standardized note, and duplicates are resolved
 
-1. **Schema discovery.** `get_properties` via the HubSpot MCP enumerates the current contact schema — which properties exist, their types, their valid enum values. The pipeline adapts to the live schema rather than hard-coding property names that might have drifted.
-2. **Full-pipeline audit.** `search_crm_objects` with filter groups paginates through all 612 contacts in manageable batches. Each contact is fetched with the property set relevant to the audit (lifecycle stage, lead status, recent activity, creation source, duplicate indicators).
-3. **Categorization.** Each contact is scored against a categorization matrix — does it have a lead status, does that status match observable engagement history, are there recent activities that contradict the status, is it a likely duplicate? Outputs three buckets: already good, needs status correction, needs status assignment.
-4. **Batch update execution.** The 550 contacts needing updates are processed in batches of 10 via `manage_crm_objects`. Batch size chosen to balance API throughput against rollback granularity — a single bad record in a batch of 10 is recoverable; in a batch of 100, it's not.
-5. **Error resolution.** Duplicate-contact errors ("Contact already exists") are caught, the pre-existing contact ID is retrieved, and the operation is converted from create-new to update-existing. 11 of these were resolved gracefully without manual intervention. 4 structural duplicates (same email across two records, both with independent activity history) were flagged for manual merge — the system correctly declines to auto-merge these because a merge policy requires a human judgment call.
-6. **Validation & reconciliation.** Cross-references final counts across all categories: 507 acceptable + 43 corrected + 62 assigned = 612 total. If this math doesn't close, the pipeline halts and flags the discrepancy rather than producing output of unknown integrity.
-
----
-
-## 4. Error Handling & Edge Cases
-
-Specific cases observed and handled:
-
-- **"Contact already exists" on create:** HubSpot's API returns a specific error code when a create operation conflicts with an existing record on unique-property match (typically email). The pipeline catches this exact error class, extracts the conflicting contact ID from the response, and converts the operation into an update against the existing record. 11 contacts were resolved this way during the sweep, all without manual intervention.
-- **Structural duplicates (same email, different histories):** When two contacts have the same email but independent activity streams, the pipeline does NOT auto-merge. Merging them automatically would collapse two distinct relationship histories; the correct action is human review. 4 such cases were flagged for manual resolution with the relevant data attached to the report.
-- **Schema drift:** If a property referenced by the pipeline doesn't exist in the live schema (because someone deleted or renamed it), the `get_properties` check catches this before any update call is made. Fail-closed behavior; no partial-schema updates.
-- **Rate limits:** HubSpot's API has per-second and per-day rate limits. Batch size of 10 with natural pacing between batches keeps requests well under the per-second cap. No rate-limit errors occurred during the sweep.
-
-**Fail-closed principle:** The pipeline is designed so that any unexpected state — schema mismatch, reconciliation math not closing, batch failure — halts execution rather than continuing with partial or questionable results. This is deliberate: a CRM with inconsistent partial updates is worse than one with known-broken-but-untouched state.
+**Out:**
+- 612 contacts audited and sorted into three groups: 507 already fine, 43 needing a status correction, 62 needing a status assigned
+- 550 contacts batch updated, run as 55 batches of 10, with 0 failures
+- 54 standardized voicemail activity notes created with contact associations
+- 11 duplicate-contact errors resolved automatically during the run
+- 4 structural duplicates flagged for manual merge
+- Category counts checked against the total: 507 + 43 + 62 = 612
 
 ---
 
-## 5. Quantifiable Metrics
+## How it ran
 
-**Scale:**
-- 612 contacts audited
-- 550 contacts batch-updated
-- 55 batches of 10
-- 54 activity notes created
-- 43 lead status corrections
-- 11 duplicate-error recoveries (automated)
-- 4 structural duplicates flagged (manual review)
-- 0 batch failures
-
-**Accuracy:**
-- 507 + 43 + 62 = 612 — reconciliation math closes exactly
-- Every activity note has a contact association verified via foreign-key check before write
-- Every lead status value verified against the live enum before write
-
-**Time:**
-- Estimated manual baseline: ~8 hours of SDR time (~13 minutes per 10-contact batch, plus context switching)
-- Actual execution: ~15 minutes of automated run time
-- Time saved: ~7.75 hours per audit cycle
+1. **Schema read.** `get_properties` through the HubSpot MCP returns the current contact schema: which properties exist, their types, their valid enum values. This is what the update step writes against.
+2. **Audit.** `search_crm_objects` with filter groups paginates through all 612 contacts, pulling the property set relevant to the audit: lifecycle stage, lead status, recent activity, creation source.
+3. **Categorization.** Each contact is checked against the target state. Does it have a lead status? Does that status match its observable activity history? Is there recent activity that contradicts it? That produces the three groups above.
+4. **Batch updates.** The 550 contacts needing changes are written through `manage_crm_objects` in batches of 10.
+5. **Error resolution.** Create operations that collide with an existing record return a "Contact already exists" error. Those were caught, the existing contact ID retrieved, and the operation redirected to update that record instead of creating a new one. 11 contacts resolved this way with no manual work.
+6. **Count check.** Final category counts were cross-referenced against the total to confirm nothing was lost, skipped or double counted.
 
 ---
 
-## 6. Technical Differentiation
+## Edge cases
 
-**What makes this non-obvious:**
+**Duplicate collisions on create.** HubSpot returns a specific error when a create conflicts with an existing record on a unique property, usually email. Those were converted into updates against the existing contact. 11 during this run.
 
-- **Adapts to live schema.** The pipeline reads the current HubSpot property schema at run time via `get_properties`. Hard-coded property names would break silently when HubSpot admins renamed or deprecated fields. This is a common failure mode for one-off CRM scripts that read fine on the day they were written and break two months later.
-- **Converts errors into operations.** Catching a "Contact already exists" error and transforming it into an update-against-existing-ID is the difference between "11 skipped contacts that an SDR has to clean up manually" and "11 gracefully resolved contacts with a clean audit trail." The error class exists because HubSpot tells you *which* record caused the conflict — the pipeline uses that information instead of logging and moving on.
-- **Knows when not to automate.** The 4 structural duplicates were surfaced for manual review rather than auto-merged. This is a deliberate constraint: a merge policy requires human judgment about which activity history to preserve, and automating it would silently destroy data.
-- **Reconciliation math as the safety net.** 507 + 43 + 62 = 612. If this doesn't close, something is wrong and the pipeline refuses to declare success. A senior engineer reviewing this will recognize the same pattern as double-entry bookkeeping — the reconciliation exists precisely to catch the silent failures other checks would miss.
-- **Batch size of 10 is a reasoned choice, not arbitrary.** Small enough that any single failure has blast radius of 10 records; large enough to be materially faster than per-record calls; round enough to produce clean reconciliation math (55 × 10 = 550).
+**Structural duplicates.** Two contacts sharing an email but carrying separate activity histories were not merged automatically. Merging them would collapse two distinct relationship records into one, and picking which history survives is a judgment call. 4 were flagged for manual review with their data attached.
 
-**What would break with a less-rigorous approach:**
-
-- Hard-coded property names → silent failure when schema drifts
-- No error-class handling → 11 duplicates skipped, manual cleanup required
-- Auto-merging structural duplicates → permanent loss of activity history
-- No reconciliation math → partial failures go undetected
-- Batch size of 100 → single bad record cascades to 100-record rollback
-
-**Senior-engineer design choices worth flagging:**
-
-- Live schema discovery before any write operation
-- Error-class branching, not generic try/except
-- Explicit fail-closed on reconciliation mismatch
-- Human-in-the-loop escape hatch for non-automatable cases
-- MCP-based tool integration rather than raw SDK calls — lets the AI orchestrate operations with clear tool boundaries
+**Rate limits.** HubSpot enforces per-second and per-day API limits. Batches of 10 with normal pacing between them stayed well under the per-second cap. No rate limit errors occurred.
 
 ---
 
-## 7. Deployment Status
+## Numbers
 
-- **Status:** Production. Sweep completed successfully 2025.
-- **Repeatability:** The pipeline is designed to be re-run as an ongoing hygiene sweep — quarterly or on-demand. Subsequent runs will find far fewer anomalies (since most were resolved in the first sweep).
-- **Maintainer:** Max Wilber.
-- **Dependencies:** HubSpot MCP server, Claude AI as orchestration layer, RevSend's HubSpot portal credentials.
+| | |
+|---|---|
+| Contacts audited | 612 |
+| Contacts batch updated | 550 |
+| Batches | 55 |
+| Batch failures | **0** |
+| Activity notes created | 54 |
+| Lead status corrections | 43 |
+| Duplicate errors resolved automatically | 11 |
+| Structural duplicates flagged for review | 4 |
+| Category reconciliation | 507 + 43 + 62 = 612 |
+
+**Time.** Manual baseline was roughly 8 hours of SDR work, counting context switching. The run took about 15 minutes.
+
+---
+
+## What the work actually required
+
+The API calls are the easy part. Three things took the thinking:
+
+**Defining the target state before touching anything.** "Clean CRM" is not a specification. Deciding what every contact must have, what counts as an acceptable status, and what makes a record wrong is the work that makes automation possible at all. That definition came out of the HubSpot operating system I had written for the team first.
+
+**Deciding what not to automate.** The 4 structural duplicates could have been merged programmatically. They were not, because choosing which activity history survives a merge is a business decision and getting it wrong destroys relationship data that cannot be recovered. Knowing where to stop matters more than how much you can automate.
+
+**Checking the counts.** 507 + 43 + 62 = 612 is simple arithmetic, and it is the only thing standing between "the script finished" and "the script did what it was supposed to." A sweep that silently skips 40 contacts still reports success without it.
 
 ---
 
-## 8. Business Outcomes for RevSend
+## Deployment
 
-- **~8 hours of SDR time reclaimed per audit cycle.** Time that would have gone to data janitorial work now goes to outreach.
-- **612 contacts with consistent, queryable state.** Before the sweep, "show me every BAD_TIMING contact we haven't re-engaged in 60 days" was a question the CRM couldn't answer reliably; after, it's a single filter.
-- **54 voicemail activity notes standardized.** Activity history is now analyzable — reps can see "what was said on the last VM left for this contact" without opening each record.
-- **Operational foundation for downstream automation.** The Outbound Sales Agent Skill (implementation #12) and other AI-driven workflows assume consistent CRM state. This sweep was the precondition.
-- **Zero data loss.** 0 batch failures, 0 records lost, 11 errors gracefully recovered, 4 structural duplicates preserved for human review.
+Ran as a one-time remediation sweep against RevSend's live HubSpot portal in 2025. The categorization logic and the note format were carried forward as the team's ongoing standard.
 
----
+## Outcome for RevSend
 
-## 9. Resume Bullet (Published)
+Lead statuses became consistent across the pipeline, which made sequence targeting reliable. Voicemail activity became searchable, so questions like "which voicemails from last week never got a follow-up" became answerable. Roughly 8 hours of SDR time per audit cycle went back to selling.
 
-> Built and shipped an automated CRM audit and batch remediation system for a B2B SaaS sales team, orchestrating Claude AI + HubSpot MCP server to audit 612 contacts and execute 550 batch updates across 55 batches with 0 failures, 11 automated duplicate-error recoveries, and a reconciliation check (507 + 43 + 62 = 612) that fails closed on any count mismatch; reclaimed ~8 hours of SDR time per audit cycle vs. the manual baseline.
+## Resume line
 
-Every number in this bullet is verifiable from the final audit report and the HubSpot activity log.
-
----
+Built an automated CRM audit and batch remediation system for a B2B SaaS sales team using Claude with the HubSpot MCP server, auditing 612 contacts and executing 550 batch updates across 55 batches with 0 failures and 11 automated duplicate-error recoveries; reclaimed roughly 8 hours of SDR time per audit cycle.
 
 ## Reproducibility
 
-The audit methodology and the pipeline logic can be re-run against the live HubSpot portal at any time. Reconciliation math, error-class handling, and fail-closed behavior are the same whether the contact count is 612 or 6,120.
+The audit logic can be re-run against the live portal at any time. The categorization rules, the note format and the count check work the same whether the contact count is 612 or 6,120.
