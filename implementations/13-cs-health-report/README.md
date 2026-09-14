@@ -1,4 +1,4 @@
-# cs-health-report. Implementation #23
+# cs-health-report
 
 **Built for:** RevSend Customer Success
 **Shipped:** 2026-04-19
@@ -9,7 +9,7 @@
 
 ## 1. Identity & Purpose
 
-A Claude skill that wraps my internally-built "CS Health Score Pipeline v2.1" and turns his daily Customer Success morning triage into a single natural-language prompt producing a shareable priorities-first PDF.
+A Claude skill that wraps my internally-built "CS Health Score Pipeline v2.1" and turns my daily Customer Success morning triage into a single natural-language prompt producing a shareable priorities-first PDF.
 
 The pipeline already existed. What shipped in this project is the skill package (`SKILL.md` + `references/` + `scripts/` + `assets/`), the reportlab PDF renderer (~700 lines), a sample dataset, a three-case eval harness, and the benchmark tooling. This is an AE-authored AI productivity tool, not a data-engineering deliverable.
 

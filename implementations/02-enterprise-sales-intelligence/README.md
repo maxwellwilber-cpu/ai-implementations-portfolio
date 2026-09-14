@@ -1,4 +1,4 @@
-# Enterprise Sales Intelligence System. Master Strategy Engine
+# Enterprise Sales Intelligence System: the master strategy engine
 
 **Built for:** RevSend (B2B SaaS corporate gifting platform)
 **Deployed:** 2025

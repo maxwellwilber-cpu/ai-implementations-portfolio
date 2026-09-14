@@ -22,8 +22,8 @@ Before this pipeline existed, BCBA's client history lived across four disparate 
 ## 2. Input → Output
 
 **Inputs:**
-- `sessions.csv`. 88,306 session-level records across 6 years, exported from the booking system
-- `clients.csv`. 12,244 client contact records, exported from a legacy CRM
+- `sessions.csv`: 88,306 session-level records across 6 years, exported from the booking system
+- `clients.csv`: 12,244 client contact records, exported from a legacy CRM
 - `packages.numbers`. Apple Numbers file of purchased lesson packages, 3 sheets
 - `payments.numbers`. Apple Numbers file of payment events, 4 sheets with inconsistent headers
 
@@ -33,7 +33,7 @@ Before this pipeline existed, BCBA's client history lived across four disparate 
 
 **Analytical outputs produced to date (each is a use case built on top of the master dataset):**
 - `segments.xlsx`. RFM scoring applied to produce named behavioral segments (Champions, Loyal, At Risk, Lost, etc.); the segmentation criteria are configurable, not fixed
-- `reactivation_targets.xlsx`. 3,029 lapsed clients ranked by historical spend, with contact info and last-session date attached
+- `reactivation_targets.xlsx`: 3,029 lapsed clients ranked by historical spend, with contact info and last-session date attached
 - Any future question, cohort retention by year, LTV distribution by coach, package adherence, runs as an additional query against the governed master without needing to re-clean the source data
 
 ---
@@ -46,7 +46,7 @@ Nine ordered stages, all deterministic:
 2. **Phone normalization.** Regex parses six different phone columns (primary, mobile, home, emergency1, emergency2, billing), strips formatting (parens, hyphens, spaces, leading +1), validates as 10-digit US, and collapses into a single `phone_normalized` field.
 3. **Email deduplication.** Lowercases, strips whitespace, handles the Gmail dot-aliasing pattern (`john.doe` = `johndoe`), and builds a hash index to catch duplicate records that differ only in email format.
 4. **State standardization.** 40+ observed format variations (`CA`, `California`, `Calif.`, `Cali`, `ca`, trailing-space entries) collapsed to USPS 2-letter codes via a lookup dictionary.
-5. **DOB placeholder detection.** Identified 3,528 fake DOB entries, patterns like `1/1/1900`, `1/1/1990`, `12/31/1969` (Unix epoch bleed-through), and flagged them rather than trusting them for age-based segmentation.
+5. **DOB placeholder detection.** Flagged placeholder DOB entries, patterns like `1/1/1900`, `12/31/1969` (Unix epoch bleed-through), and flagged them rather than trusting them for age-based segmentation.
 6. **Name-matching engine.** Resolves the same client appearing across multiple source files with name variations (nickname, maiden name, typo, initial vs. full). Match rules in priority order:
    - Exact name + exact DOB (confidence 1.0)
    - Exact name + DOB within ±1 day (confidence 0.95, handles keystroke errors)
@@ -68,7 +68,7 @@ How the matching was checked:
 - **Manual spot-check review of ambiguous cases:** match rules tuned against observed edge cases in BCBA's data, twins sharing DOB and last name, nickname-vs-full-name pairs, siblings with close birthdays, Unicode-accented name variants, before production use
 - **Cross-table referential integrity:** every `client_id` foreign key in `sessions_attributed.xlsx` is verified present in `clients_cleaned.xlsx` before export
 - **Record count reconciliation:** input vs. output counts are checked at every transformation stage to confirm no silent drops or duplications
-- **Placeholder detection upstream of match:** 3,528 fake DOBs flagged before they can contaminate age-based segmentation
+- **Placeholder detection upstream of match:** placeholder DOBs flagged before they can contaminate age-based segmentation
 
 A formal scored-benchmark QA harness with a pre-labeled ground-truth set is a planned enhancement. The current match rules were developed iteratively against real observed edge cases from BCBA's data rather than a held-out benchmark.
 
@@ -84,7 +84,7 @@ A formal scored-benchmark QA harness with a pre-labeled ground-truth set is a pl
 
 **Quality:**
 - Matching rules tuned against observed edge cases, with ambiguous pairs reviewed by hand
-- 3,528 placeholder DOBs detected and quarantined
+- Placeholder DOBs detected and quarantined
 - 0 foreign-key integrity violations in final output
 - Record count reconciliation enforced at every transformation stage
 
@@ -111,7 +111,7 @@ A formal scored-benchmark QA harness with a pre-labeled ground-truth set is a pl
 **What would break with a less-rigorous approach:**
 
 - Treating the four sources as joinable without cleaning would produce 5-10% false-duplicate merges
-- Trusting DOBs without placeholder detection would produce a "children's program" segment containing 3,528 people from 1900 and 1969
+- Trusting DOBs without placeholder detection would produce a "children's program" segment built on birthdays from 1900 and 1969
 - Off-the-shelf fuzzy matching alone leaves a lot on the table with data this messy. The rules that did the most work here were the one-day date-of-birth tolerance, which catches keystroke errors, and Unicode normalization for accented names
 
 **Senior-engineer design choices worth flagging:**
@@ -126,7 +126,7 @@ A formal scored-benchmark QA harness with a pre-labeled ground-truth set is a pl
 
 - **Status:** Production. In active use since Q3 2025.
 - **Refresh cadence:** Re-runs against fresh source exports on demand (typically monthly or when a new behavioral question is asked); each run completes in under 10 minutes
-- **Maintainer:** I. Source exports are pulled by the BCBA GM; pipeline execution is my.
+- **Maintainer:** me. Source exports are pulled by the BCBA GM; I run the pipeline.
 - **Primary consumer:** BCBA ownership and GM, plus the Q1 2026 reactivation campaign team
 
 ---

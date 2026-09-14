@@ -1,4 +1,4 @@
-# outbound-sales-agent. Packaged Claude Skill
+# outbound-sales-agent: a packaged Claude skill
 
 **Built for:** RevSend (B2B SaaS corporate gifting platform)
 **Deployed:** 2025

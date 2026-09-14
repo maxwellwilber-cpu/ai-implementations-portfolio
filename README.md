@@ -12,10 +12,12 @@ Ten systems, then nine strategy assets. If you want to know what I can build, st
 
 ## Start here
 
-Three of these have public code you can clone and run:
+Four of these have public code you can clone and run in about a minute:
 
-- **[client-data-cleaner](https://github.com/maxwellwilber-cpu/client-data-cleaner)** is a working version of the BCBA data warehouse below, running on generated data. 100% matching precision against known ground truth, zero wrong merges.
+- **[hubspot-audit](https://github.com/maxwellwilber-cpu/hubspot-audit)** is the public version of the CRM audit below. Point it at a HubSpot portal, get back what is broken with the rule behind every number. Read-only, and that is enforced by tests rather than promised. 215 tests, validated against a live portal.
+- **[client-data-cleaner](https://github.com/maxwellwilber-cpu/client-data-cleaner)** is a working version of the BCBA data warehouse below, running on generated data. 100% precision and 94.6% recall against known answers, zero wrong merges.
 - **[checkpoint](https://github.com/maxwellwilber-cpu/checkpoint)** validates AI output against declared rules. It catches invented numbers, citations that point nowhere, and a declared path that matches nothing so a ruleset cannot silently degrade to checking nothing.
+- **[evs](https://github.com/maxwellwilber-cpu/evs)** is the validation framework for the financial analysis pipeline, 43 pytest tests against sample data with planted errors.
 
 And one has a measured before and after: **cs-health-report** scored 100% on its eval set against 83.8% for baseline Claude without it. That's the number I'd point at first.
 
@@ -59,7 +61,7 @@ Installed at the org level. **Used by 4 SDRs and both co-founders.** It cut my o
 
 An automated audit of RevSend's HubSpot instance. It analyzed 612 contacts through paginated API searches, categorized them by engagement status, and executed batch updates to standardize lead statuses and create structured activity notes.
 
-**550 batch updates with 0 failures.** 43 status updates, 54 voicemail activity notes created with contact associations, 11 duplicate contacts caught and updated instead of duplicated. Counts were cross-referenced across categories to confirm they reconciled to 612. Work that would have taken an SDR around 8 hours ran in about 15 minutes.
+**612 contacts audited, 108 records actually remediated, 550 writes issued, 0 failures.** The remediation was 43 status corrections, 54 voicemail activity notes created with contact associations, and 11 duplicate contacts caught and updated instead of duplicated. The other 507 writes re-wrote an already-correct status so the whole book ended on one taxonomy, which is worth doing but is not 507 fixes. Counts were cross-referenced across categories to confirm they reconciled to 612. Work that would have taken an SDR around 8 hours ran in about 15 minutes.
 
 Built on the HubSpot API through an MCP server integration with Claude. Full spec: [implementations/06-crm-audit-remediation/](implementations/06-crm-audit-remediation/)
 
