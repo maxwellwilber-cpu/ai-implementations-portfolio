@@ -1,6 +1,6 @@
 # cs-health-report
 
-**Built for:** RevSend Customer Success
+**Built for:** the platform Customer Success
 **Shipped:** 2026-04-19
 **Author:** Maxwell Wilber
 **Package:** `cs-health-report.skill` (~27 KB)
@@ -15,7 +15,7 @@ The pipeline already existed. What shipped in this project is the skill package 
 
 **Problem solved:** my morning ritual, reconciling HubSpot activity, product usage trends, and Stripe billing state into a priority-ordered contact list, was an estimated ~15-minute context switch each morning, inconsistent between days, and produced no artifact shareable with managers or handoffs.
 
-**Users:** I was the primary user, working at RevSend as a contracted employee handling customer success and automations. The skill is installed at the RevSend org level, so any teammate invoking it in Cowork can generate the same report.
+**Users:** I was the primary user, working at the SaaS company as a contracted employee handling customer success and automations. The skill is installed at the org level, so any teammate invoking it in Cowork can generate the same report.
 
 ---
 
@@ -140,7 +140,7 @@ Shipped 2026-04-19. Production metrics do not yet exist. Only reproducible, eval
 
 ## 7. Deployment Status
 
-- **Status:** Shipped to my RevSend org. v1 prototype, ready for daily use.
+- **Status:** Shipped to my the platform org. v1 prototype, ready for daily use.
 - **Deployment date:** 2026-04-19
 - **Trigger:** On-demand, via natural-language invocation in Cowork. Trigger phrases: "CS report", "health check", "morning CS briefing", "who should I focus on today", "which accounts are at risk", "churn signals", "QBR list", "30-day check-ins", "run the CS pipeline", plus direct references to `cs_pipeline_v2.py` or `cs_report_v2.json`. Not scheduled, explicit product decision.
 - **Distribution:** `cs-health-report.skill` (~27 KB) packaged artifact. Installed at the org level.
@@ -148,7 +148,7 @@ Shipped 2026-04-19. Production metrics do not yet exist. Only reproducible, eval
 
 ---
 
-## 8. Business Outcomes for RevSend
+## 8. Business Outcomes for the platform
 
 Shipped 2026-04-19. Zero production data points yet.
 
@@ -176,7 +176,7 @@ Every number in this bullet is reproducible from `build_benchmark.py` + `iterati
 ## Reproducibility
 
 The scoring pipeline, the eval harness and the graded test cases live in a private
-RevSend repository and are not published here. The benchmark figures below were produced
+the platform repository and are not published here. The benchmark figures below were produced
 by that harness; nothing in this document can be re-run from a public repo, and it should
 be read as a description rather than as evidence.
 

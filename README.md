@@ -2,7 +2,7 @@
 
 Maxwell Wilber | Seattle, WA | [LinkedIn](https://linkedin.com/in/maxwellwilber)
 
-Between early 2025 and mid 2026 I built AI systems for two businesses. Beach City Baseball Academy is a youth sports facility that did $1.41M in 2025. RevSend is a B2B SaaS gifting platform. I worked with BCBA as an independent consultant and with RevSend as a contracted employee handling customer success and automations, teaching myself the technical side as I went, and this is the record of what came out of it.
+Between early 2025 and mid 2026 I built AI systems for two businesses. The first is a youth baseball academy that did $1.41M in 2025. The second is a B2B SaaS gifting platform. I worked with the academy as an independent consultant and with the SaaS company as a contracted employee handling customer success and automations, teaching myself the technical side as I went, and this is the record of what came out of it.
 
 ## How this is organized
 
@@ -15,7 +15,7 @@ Ten systems, then nine strategy assets. If you want to know what I can build, st
 Four of these have public code you can clone and run in about a minute:
 
 - **[hubspot-audit](https://github.com/maxwellwilber-cpu/hubspot-audit)** is the public version of the CRM audit below. Point it at a HubSpot portal, get back what is broken with the rule behind every number. Read-only, and that is enforced by tests rather than promised. 215 tests, validated against a live portal.
-- **[client-data-cleaner](https://github.com/maxwellwilber-cpu/client-data-cleaner)** is a working version of the BCBA data warehouse below, running on generated data. 100% precision and 94.6% recall against known answers, zero wrong merges.
+- **[client-data-cleaner](https://github.com/maxwellwilber-cpu/client-data-cleaner)** is a working version of the academy data warehouse below, running on generated data. 100% precision and 94.6% recall against known answers, zero wrong merges.
 - **[checkpoint](https://github.com/maxwellwilber-cpu/checkpoint)** validates AI output against declared rules. It catches invented numbers, citations that point nowhere, and a declared path that matches nothing so a ruleset cannot silently degrade to checking nothing.
 - **[evs](https://github.com/maxwellwilber-cpu/evs)** is the validation framework for the financial analysis pipeline, 43 pytest tests against sample data with planted errors.
 
@@ -25,7 +25,7 @@ And one has a measured before and after: **cs-health-report** scored 100% on its
 
 ## Production systems
 
-### cs-health-report (RevSend)
+### cs-health-report (SaaS client)
 
 A daily Customer Success briefing for a 14 account book. It pulls from HubSpot, a MySQL product usage replica, and Stripe, scores each account on product usage, CS engagement and payment health, then renders a priorities-first PDF.
 
@@ -37,7 +37,7 @@ It fails closed on HubSpot, because without HubSpot there is no credible report.
 
 I built a three case eval harness with pypdf assertion grading to check it. **100% pass rate, 31 of 31 assertions, against 83.8% for baseline Claude. Runs 44% faster, 27.9s versus 50.3s.** Shipped April 19, 2026 and installed at the org level.
 
-### Client data warehouse (BCBA)
+### Client data warehouse (baseball academy)
 
 Six years of client history lived across four files that didn't talk to each other. Two CSV exports and two Apple Numbers files, with inconsistent formats, duplicate people, and fake birthdays. A business doing $1.41M a year could not answer "which clients have we lost."
 
@@ -45,11 +45,11 @@ I built a pipeline that unified all of it. 88,306 session records and 12,244 cli
 
 RFM scoring on top of that produced behavioral segments and surfaced **3,029 lapsed clients with $1.2M+ in historical spend**, ranked and with contact info attached. That became the reactivation campaign. The bigger win was that the business went from unable to ask behavioral questions at all to answering new ones off the same clean dataset.
 
-A generalized version is public at [client-data-cleaner](https://github.com/maxwellwilber-cpu/client-data-cleaner), and that one **is** formally benchmarked: 100% precision and zero wrong merges against known ground truth, with the harness in the repo so anyone can re-run it. The BCBA work came first and was never scored that way. Building the benchmark afterwards is what convinced me the rules held up. Full spec: [implementations/01-client-data-warehouse/](implementations/01-client-data-warehouse/)
+A generalized version is public at [client-data-cleaner](https://github.com/maxwellwilber-cpu/client-data-cleaner), and that one **is** formally benchmarked: 100% precision and zero wrong merges against known ground truth, with the harness in the repo so anyone can re-run it. The academy work came first and was never scored that way. Building the benchmark afterwards is what convinced me the rules held up. Full spec: [implementations/01-client-data-warehouse/](implementations/01-client-data-warehouse/)
 
-### Outbound Sales Agent skill (RevSend)
+### Outbound Sales Agent skill (SaaS client)
 
-A Claude skill that front-loads RevSend's product differentiators, buyer personas, competitive battle cards and messaging principles, so every invocation produces RevSend specific output instead of generic sales advice.
+A Claude skill that front-loads the platform's product differentiators, buyer personas, competitive battle cards and messaging principles, so every invocation produces platform-specific output instead of generic sales advice.
 
 It's organized around four response modes: targeting and research, messaging and copy, pipeline and organization, strategy and planning. It references the actual stack the team uses and teammates by name rather than suggesting generic tools.
 
@@ -57,35 +57,35 @@ Full spec: [implementations/12-outbound-sales-agent-skill/](implementations/12-o
 
 Installed at the org level. **Used by 4 SDRs and both co-founders.** It cut my own per-prospect prep from about 30 minutes to about 3. Team-wide measurement is still pending, so I won't claim it.
 
-### CRM audit and batch remediation (RevSend)
+### CRM audit and batch remediation (SaaS client)
 
-An automated audit of RevSend's HubSpot instance. It analyzed 612 contacts through paginated API searches, categorized them by engagement status, and executed batch updates to standardize lead statuses and create structured activity notes.
+An automated audit of the platform's HubSpot instance. It analyzed 612 contacts through paginated API searches, categorized them by engagement status, and executed batch updates to standardize lead statuses and create structured activity notes.
 
 **612 contacts audited, 108 records actually remediated, 550 writes issued, 0 failures.** The remediation was 43 status corrections, 54 voicemail activity notes created with contact associations, and 11 duplicate contacts caught and updated instead of duplicated. The other 507 writes re-wrote an already-correct status so the whole book ended on one taxonomy, which is worth doing but is not 507 fixes. Counts were cross-referenced across categories to confirm they reconciled to 612. Work that would have taken an SDR around 8 hours ran in about 15 minutes.
 
 Built on the HubSpot API through an MCP server integration with Claude. Full spec: [implementations/06-crm-audit-remediation/](implementations/06-crm-audit-remediation/)
 
-### Sponsor intelligence and competitive analysis (BCBA)
+### Sponsor intelligence and competitive analysis (baseball academy)
 
 I scraped 26 competitor websites, structured 500+ sponsor prospects into a categorized workbook, and ran tier analysis across 7 leagues. The analysis turned up a gap: nobody was selling anything under $1,000, which meant small local businesses had no way in.
 
 That finding became a product. I designed the full tier stack around it, including a $275/month Community Partner tier specifically to close that gap.
 
-BCBA had no sponsorship program before this. It now has **21 partners, $50K+ raised in the first six months, and roughly $110K annualized run rate.** Chrome extension scraping, Python and openpyxl for the dedup and categorization, 14 tab workbook as the output.
+the academy had no sponsorship program before this. It now has **21 partners, $50K+ raised in the first six months, and roughly $110K annualized run rate.** Chrome extension scraping, Python and openpyxl for the dedup and categorization, 14 tab workbook as the output.
 
-### Brand asset production pipeline (BCBA)
+### Brand asset production pipeline (baseball academy)
 
 An AI to design pipeline built on the Canva MCP server. Claude generates copy against the brand context document, picks a template that matches the content type, populates text and images through MCP tools, and exports an editable Canva design for review.
 
 It collapsed copywriting and design from two steps into one. Used for social posts and most sponsor facing material from Q4 2025 on.
 
-### PDF document generation (BCBA)
+### PDF document generation (baseball academy)
 
 Python and ReportLab producing four branded document types: coach one-pagers, sponsorship decks, sponsor flyers, program overviews. Custom layouts, embedded images, QR codes through the qrcode library.
 
 It removed the need for third party design tools on routine documents. Per-document production went from around two hours in Canva with manual edits to about ten minutes of directed iteration. The coach flyer went through three revision cycles in under half an hour.
 
-### Sponsor content calendar automation (BCBA)
+### Sponsor content calendar automation (baseball academy)
 
 Every sponsor contract carries deliverables: posts, shoutouts, email features, event mentions. Tracking 21 of those by hand is how deliverables get missed, and missed deliverables are how sponsors churn.
 
@@ -93,13 +93,13 @@ I mapped each partner's contract terms to their cadence and automated the tracki
 
 The business can now sell multi-year deals with confidence, because fulfillment is systematized rather than remembered.
 
-### Apollo.io contact enrichment (RevSend)
+### Apollo.io contact enrichment (SaaS client)
 
 A pipeline that enriches HubSpot contacts with verified emails, current job titles and LinkedIn URLs through Apollo.io's bulk matching API. HubSpot records go out, Apollo matches on name and company, enriched data comes back and writes to the contact record.
 
 It removed the manual research step that had been capping outreach volume.
 
-### Instagram content analysis (BCBA)
+### Instagram content analysis (baseball academy)
 
 A scraping and analysis pipeline that pulled 51 Instagram posts through Chrome extension MCP, navigating the login wall and both the grid and Reels tabs, then structured them into a CSV across 8 analytical dimensions.
 
@@ -111,23 +111,23 @@ The report covers engagement rates, content types, posting timing and how sponso
 
 Not software. These are documents, frameworks and operating procedures I built with AI as the execution engine. Several of them are behind the numbers in the section above.
 
-**Enterprise sales intelligence system (RevSend).** A 615 line operational source of truth that consolidated six fragmented sales assets into one document: a 52 slide competitive deck, a 47 slide client use case deck, 125+ competitor case study URLs, a 27,000 word outreach playbook, and a 102 company prospect research list. Ten interconnected sections with relational cross references. It's the onboarding document for new SDR hires as the team scales. Full spec: [implementations/02-enterprise-sales-intelligence/](implementations/02-enterprise-sales-intelligence/)
+**Enterprise sales intelligence system (SaaS client).** A 615 line operational source of truth that consolidated six fragmented sales assets into one document: a 52 slide competitive deck, a 47 slide client use case deck, 125+ competitor case study URLs, a 27,000 word outreach playbook, and a 102 company prospect research list. Ten interconnected sections with relational cross references. It's the onboarding document for new SDR hires as the team scales. Full spec: [implementations/02-enterprise-sales-intelligence/](implementations/02-enterprise-sales-intelligence/)
 
-**ICP framework (RevSend).** Five ranked buyer profiles with firmographic criteria, pain points, entry angles and objection handling, built from 22 existing client profiles cross referenced against the prospect research. Every message and sequence is calibrated against it.
+**ICP framework (SaaS client).** Five ranked buyer profiles with firmographic criteria, pain points, entry angles and objection handling, built from 22 existing client profiles cross referenced against the prospect research. Every message and sequence is calibrated against it.
 
-**Multi-channel messaging framework (RevSend).** A template matrix, five ICPs by touch point, producing 30+ message variants. Each one carries a subject line, an opening hook mapped to buyer pain, a value prop tied to an ICP specific use case, and a note explaining why it works.
+**Multi-channel messaging framework (SaaS client).** A template matrix, five ICPs by touch point, producing 30+ message variants. Each one carries a subject line, an opening hook mapped to buyer pain, a value prop tied to an ICP specific use case, and a note explaining why it works.
 
-**Competitive battle cards (RevSend).** Five direct competitors distilled from a 52 slide deck into per-competitor cards with positioning, weaknesses to press on, and objection responses written as things you'd actually say out loud.
+**Competitive battle cards (SaaS client).** Five direct competitors distilled from a 52 slide deck into per-competitor cards with positioning, weaknesses to press on, and objection responses written as things you'd actually say out loud.
 
-**Industry story lookup (RevSend).** 22 client stories extracted from a slide deck and indexed by industry, each with the stat to quote and the conversation moment to use it in. Discovery call prep dropped from about 20 minutes to about 5.
+**Industry story lookup (SaaS client).** 22 client stories extracted from a slide deck and indexed by industry, each with the stat to quote and the conversation moment to use it in. Discovery call prep dropped from about 20 minutes to about 5.
 
-**HubSpot operating system (RevSend).** Lead status taxonomy across HubSpot's 8 built in statuses with criteria for every transition, standardized note formats, re-engagement rules, and duplicate resolution. This is what made the CRM audit above possible: you cannot automate a process nobody has defined.
+**HubSpot operating system (SaaS client).** Lead status taxonomy across HubSpot's 8 built in statuses with criteria for every transition, standardized note formats, re-engagement rules, and duplicate resolution. This is what made the CRM audit above possible: you cannot automate a process nobody has defined.
 
-**LinkedIn DM diagnostic (RevSend).** An audit comparing actual sent DMs against the messaging framework, which surfaced five recurring failure patterns. Each one comes with a rewritten example rather than a note saying to do better.
+**LinkedIn DM diagnostic (SaaS client).** An audit comparing actual sent DMs against the messaging framework, which surfaced five recurring failure patterns. Each one comes with a rewritten example rather than a note saying to do better.
 
-**Brand management hub (BCBA).** A 557 line brand context document built from a manual brand audit, website extraction, analysis of 51 Instagram posts, and stakeholder interviews. Nine sections covering voice, visual identity, audience and content strategy. Every downstream AI session pulls from it, which is what keeps the brand from drifting across channels. Content production went from around 45 minutes a piece to about 10.
+**Brand management hub (baseball academy).** A 557 line brand context document built from a manual brand audit, website extraction, analysis of 51 Instagram posts, and stakeholder interviews. Nine sections covering voice, visual identity, audience and content strategy. Every downstream AI session pulls from it, which is what keeps the brand from drifting across channels. Content production went from around 45 minutes a piece to about 10.
 
-**AI outreach plan and playbooks (BCBA).** 500+ prospects sorted into four tiers, five category specific pitch strategies, and a five touch follow up cadence. This ran the sponsorship drive that signed 21 partners against a target of 16.
+**AI outreach plan and playbooks (baseball academy).** 500+ prospects sorted into four tiers, five category specific pitch strategies, and a five touch follow up cadence. This ran the sponsorship drive that signed 21 partners against a target of 16.
 
 ---
 

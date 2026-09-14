@@ -1,6 +1,6 @@
 # outbound-sales-agent: a packaged Claude skill
 
-**Built for:** RevSend (B2B SaaS corporate gifting platform)
+**Built for:** the platform (B2B SaaS corporate gifting platform)
 **Deployed:** 2025
 **Author:** Maxwell Wilber
 **Package:** Claude skill, opinionated system prompt
@@ -9,11 +9,11 @@
 
 ## 1. Identity & Purpose
 
-A Claude skill that functions as a dedicated outbound sales strategist for RevSend. It gives Claude deep, in-context knowledge of RevSend's product differentiators, ICP and buyer personas, competitive landscape, sales motion, and messaging principles, so every invocation produces RevSend-specific strategy, copy, and pipeline assets on demand rather than generic LLM output.
+A Claude skill that functions as a dedicated outbound sales strategist for the platform. It gives Claude deep, in-context knowledge of the platform's product differentiators, ICP and buyer personas, competitive landscape, sales motion, and messaging principles, so every invocation produces platform-specific strategy, copy, and pipeline assets on demand rather than generic LLM output.
 
-**Problem solved:** Before this skill existed, asking an LLM for help with RevSend outbound meant starting every conversation by explaining the product, the ICP, the competitive positioning, and the sales motion before any real work could happen. The LLM would then default to generic sales advice, "send gifts to build relationships", instead of drawing on RevSend's specific differentiators (open-catalog Chrome extension, 60-second CRM-to-checkout, month-to-month pricing against annual-contract incumbents). The skill front-loads all of that context so every invocation starts from RevSend's specific reality.
+**Problem solved:** Before this skill existed, asking an LLM for help with the SaaS company outbound meant starting every conversation by explaining the product, the ICP, the competitive positioning, and the sales motion before any real work could happen. The LLM would then default to generic sales advice, "send gifts to build relationships", instead of drawing on the platform's specific differentiators (open-catalog Chrome extension, 60-second CRM-to-checkout, month-to-month pricing against annual-contract incumbents). The skill front-loads all of that context so every invocation starts from the platform's specific reality.
 
-**Users:** Currently used by 4 SDRs (including me) and the 2 co-founders at RevSend. Installed at the org level; any team member can invoke it in Cowork and receive the same context-rich responses.
+**Users:** Currently used by 4 SDRs (including me) and the 2 co-founders. Installed at the org level; any team member can invoke it in Cowork and receive the same context-rich responses.
 
 ---
 
@@ -34,15 +34,15 @@ A Claude skill that functions as a dedicated outbound sales strategist for RevSe
 
 The skill is an engineered system prompt, not a wrapper around other scripts, not a multi-file reference loader. It is a single, carefully-structured body of context that shapes Claude's responses for every outbound-related task. The structure:
 
-**Role framing.** Opens with "You are an outbound sales strategist and execution partner for RevSend" and explicitly rejects the "chatbot that spits out email templates" default. Shapes behavior before any content is loaded.
+**Role framing.** Opens with "You are an outbound sales strategist and execution partner for the platform" and explicitly rejects the "chatbot that spits out email templates" default. Shapes behavior before any content is loaded.
 
-**RevSend product knowledge section.** Open catalog via Chrome extension, 60-second CRM-to-checkout, digital-to-handwritten notes, seat-based SaaS pricing ($19/mo Starter, month-to-month, a wedge against Sendoso/Reachdesk annual contracts), native HubSpot/Salesforce attribution, hybrid digital + physical sending. These differentiators are the substrate every piece of outreach has to connect back to.
+**the platform product knowledge section.** Open catalog via Chrome extension, 60-second CRM-to-checkout, digital-to-handwritten notes, seat-based SaaS pricing ($19/mo Starter, month-to-month, a wedge against Sendoso/Reachdesk annual contracts), native HubSpot/Salesforce attribution, hybrid digital + physical sending. These differentiators are the substrate every piece of outreach has to connect back to.
 
 **ICP and buyer personas.** Sweet spot (50-500 employees, U.S.-focused, Salesforce/HubSpot users, active SDR/AE motion). Four personas with pain points and messaging angles: SDR/BDR Leaders, Sales/Revenue Ops, CS/Retention Leaders, HR/People Ops.
 
-**Competitive battle cards.** Per-competitor objection responses, for Sendoso/Reachdesk ("they have a bigger catalog," "we need global sending," "we already have a contract") and for Brilliant ("they offer white-glove creative services"). Every response is pre-mapped to a RevSend differentiator.
+**Competitive battle cards.** Per-competitor objection responses, for Sendoso/Reachdesk ("they have a bigger catalog," "we need global sending," "we already have a contract") and for Brilliant ("they offer white-glove creative services"). Every response is pre-mapped to the platform differentiator.
 
-**Sales motion and discovery questions.** 14-day trial, $100 credits, 5-step sales flow from Discovery to Conversion. Five discovery questions specifically engineered to tilt toward RevSend's strengths (e.g., "How fast can a rep send a personalized gift today, from inside Salesforce/HubSpot?").
+**Sales motion and discovery questions.** 14-day trial, $100 credits, 5-step sales flow from Discovery to Conversion. Five discovery questions specifically engineered to tilt toward the platform's strengths (e.g., "How fast can a rep send a personalized gift today, from inside Salesforce/HubSpot?").
 
 **Use case playbooks.** Stalled Deal Re-Engagement, Demo Show-Rate Boost, Closed-Lost Reactivation, Customer Expansion & Retention, each with trigger conditions, gift recommendations, and cadence outlines.
 
@@ -54,7 +54,7 @@ The skill is an engineered system prompt, not a wrapper around other scripts, no
 
 ## 4. What Makes This Non-Obvious
 
-**Opinionated over neutral.** A generic "sales AI assistant" prompt is deliberately neutral so it works for any company. This skill is the opposite, it only works for RevSend, by design. That specificity is what pulls output quality far above what a generic assistant produces.
+**Opinionated over neutral.** A generic "sales AI assistant" prompt is deliberately neutral so it works for any company. This skill is the opposite, it only works for the platform, by design. That specificity is what pulls output quality far above what a generic assistant produces.
 
 **Response-mode calibration.** The skill explicitly refuses to force a deliverable when a conversational answer would serve better, and refuses to give a paragraph when the user clearly needs a file. Most skills default to one output mode regardless of ask; this one matches medium to request.
 
@@ -68,9 +68,9 @@ The skill is an engineered system prompt, not a wrapper around other scripts, no
 
 **What would break with a generic prompt:**
 
-- Output would default to "send gifts to build relationships" rather than RevSend-specific positioning against incumbents
+- Output would default to "send gifts to build relationships" rather than platform-specific positioning against incumbents
 - Competitive objection responses would be invented from training data rather than aligned with my actual battle cards
-- ICP output would reference generic B2B personas rather than RevSend's specific 50-500 employee, U.S.-focused, Salesforce/HubSpot sweet spot
+- ICP output would reference generic B2B personas rather than the platform's specific 50-500 employee, U.S.-focused, Salesforce/HubSpot sweet spot
 - Copy output wouldn't pass the "one idea per message" filter
 - Recommendations would suggest adding tools I doesn't use
 
@@ -88,14 +88,14 @@ The skill is an engineered system prompt, not a wrapper around other scripts, no
 
 **Adoption:**
 - 4 SDRs (including me) and 2 co-founders currently use it
-- Installed at RevSend org level; adoption scales with the team
+- Installed at the SaaS company org level; adoption scales with the team
 
 **Depth of embedded context:**
-- 6 core RevSend differentiators with per-differentiator talking points
+- 6 core the platform differentiators with per-differentiator talking points
 - 4 buyer personas with pain points and messaging angles
 - 3 competitors with per-objection response scripts
 - 4 use case playbooks with cadence outlines
-- 5 discovery questions engineered to surface RevSend strengths
+- 5 discovery questions engineered to surface the platform strengths
 - 6 explicit messaging principles acting as copy-output filters
 - 4 response modes with tailored output types
 
@@ -119,16 +119,16 @@ The skill is an engineered system prompt, not a wrapper around other scripts, no
 
 ## 7. Deployment Status
 
-- **Status:** Production. In active use by the RevSend outbound team since 2025.
-- **Distribution:** Claude skill installed at the RevSend org level.
+- **Status:** Production. In active use by the platform's outbound team since 2025.
+- **Distribution:** Claude skill installed at the org level.
 - **Invocation:** Natural-language prompts in any Cowork session; no per-user configuration required.
 - **Maintainer:** I. Updates to skill content (new competitors, updated ICPs, new playbooks) propagate to all users on next invocation.
 
 ---
 
-## 8. Business Outcomes for RevSend
+## 8. Business Outcomes for the platform
 
-- **RevSend-specific output from every invocation.** Copy, strategy, and deliverables are grounded in the actual product and ICP, not hallucinated from generic sales training data.
+- **platform-specific output from every invocation.** Copy, strategy, and deliverables are grounded in the actual product and ICP, not hallucinated from generic sales training data.
 - **Per-prospect prep time compressed ~90% for my own usage.** ~30 min manual cross-reference → ~3 min skill invocation. Team-wide measurement pending as adoption scales.
 - **Institutional knowledge made invokable.** A new rep doesn't need to read every internal doc before their first prospect call, they can ask the skill and get context-rich answers in real time.
 - **Quality floor raised across the team.** Messaging principles ("one idea per message," "specificity beats cleverness") and embedded battle cards constrain output quality by design rather than by rep-by-rep review.
@@ -138,7 +138,7 @@ The skill is an engineered system prompt, not a wrapper around other scripts, no
 
 ## 9. Resume Bullet (Published)
 
-> Built a packaged Claude skill (`outbound-sales-agent`) for a B2B SaaS gifting platform, an opinionated system prompt that front-loads RevSend's product differentiators, ICP, competitive battle cards, sales motion, and messaging principles into a single invokable context, producing RevSend-specific outbound strategy, copy, and pipeline assets on demand rather than generic LLM output. Currently used by 4 SDRs and the 2 co-founders; compressed my own per-prospect prep time ~90% (30 min → 3 min) and removed variance in template/talk-track selection by encoding it as rule-driven logic in the prompt.
+> Built a packaged Claude skill (`outbound-sales-agent`) for a B2B SaaS gifting platform, an opinionated system prompt that front-loads the platform's product differentiators, ICP, competitive battle cards, sales motion, and messaging principles into a single invokable context, producing platform-specific outbound strategy, copy, and pipeline assets on demand rather than generic LLM output. Currently used by 4 SDRs and the 2 co-founders; compressed my own per-prospect prep time ~90% (30 min → 3 min) and removed variance in template/talk-track selection by encoding it as rule-driven logic in the prompt.
 
 ---
 

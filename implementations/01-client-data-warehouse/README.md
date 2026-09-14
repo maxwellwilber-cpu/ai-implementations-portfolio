@@ -1,6 +1,6 @@
 # Client Data Warehouse & Analytics Platform
 
-**Built for:** Beach City Baseball Academy (BCBA)
+**Built for:** a youth baseball academy (baseball academy)
 **Deployed:** Q3 2025
 **Author:** Maxwell Wilber
 **Stack:** Python (pandas, openpyxl), regex, RFM modeling, Excel workbook output
@@ -9,13 +9,13 @@
 
 ## 1. Identity & Purpose
 
-An ETL pipeline and governed client data platform that unifies BCBA's first six years of client and session history into a single clean, queryable master dataset. RFM segmentation for reactivation was the first analytical use case; the same dataset now powers ad-hoc segmentation, lifetime-value analysis, cohort retention tracking, and any other behavioral question the business needs to answer.
+An ETL pipeline and governed client data platform that unifies the academy's first six years of client and session history into a single clean, queryable master dataset. RFM segmentation for reactivation was the first analytical use case; the same dataset now powers ad-hoc segmentation, lifetime-value analysis, cohort retention tracking, and any other behavioral question the business needs to answer.
 
-Before this pipeline existed, BCBA's client history lived across four disparate source files, two CSV exports, two Apple Numbers files, with inconsistent formats, duplicates, placeholder birthdates, and no way to cross-reference a client's booking history to their contact record. Revenue attribution was by intuition, not data; segmentation was impossible because there was no clean person-level record to segment against.
+Before this pipeline existed, the academy's client history lived across four disparate source files, two CSV exports, two Apple Numbers files, with inconsistent formats, duplicates, placeholder birthdates, and no way to cross-reference a client's booking history to their contact record. Revenue attribution was by intuition, not data; segmentation was impossible because there was no clean person-level record to segment against.
 
 **Problem solved:** A business generating ~$1.41M/year in sessions had no single source of truth for who its clients were, what they'd spent, or who had lapsed. Any data-driven question, "which clients have we lost in the last 12 months?", "who are our highest-LTV segments?", "what does retention look like by cohort?", was unanswerable until someone cleaned the data and built a governed master.
 
-**Users:** BCBA ownership and the front desk GM. The platform feeds directly into the 2026 reactivation campaign and is the analytical backbone for any future behavioral question the business decides to investigate.
+**Users:** the academy ownership and the front desk GM. The platform feeds directly into the 2026 reactivation campaign and is the analytical backbone for any future behavioral question the business decides to investigate.
 
 ---
 
@@ -65,12 +65,12 @@ Nine ordered stages, all deterministic:
 
 How the matching was checked:
 
-- **Manual spot-check review of ambiguous cases:** match rules tuned against observed edge cases in BCBA's data, twins sharing DOB and last name, nickname-vs-full-name pairs, siblings with close birthdays, Unicode-accented name variants, before production use
+- **Manual spot-check review of ambiguous cases:** match rules tuned against observed edge cases in the academy's data, twins sharing DOB and last name, nickname-vs-full-name pairs, siblings with close birthdays, Unicode-accented name variants, before production use
 - **Cross-table referential integrity:** every `client_id` foreign key in `sessions_attributed.xlsx` is verified present in `clients_cleaned.xlsx` before export
 - **Record count reconciliation:** input vs. output counts are checked at every transformation stage to confirm no silent drops or duplications
 - **Placeholder detection upstream of match:** placeholder DOBs flagged before they can contaminate age-based segmentation
 
-A formal scored-benchmark QA harness with a pre-labeled ground-truth set is a planned enhancement. The current match rules were developed iteratively against real observed edge cases from BCBA's data rather than a held-out benchmark.
+A formal scored-benchmark QA harness with a pre-labeled ground-truth set is a planned enhancement. The current match rules were developed iteratively against real observed edge cases from the academy's data rather than a held-out benchmark.
 
 ---
 
@@ -105,7 +105,7 @@ A formal scored-benchmark QA harness with a pre-labeled ground-truth set is a pl
 - **Date-proximity name matching.** Most name-matching libraries do exact-match or fuzzy-match, not both with date disambiguation. - Handling the one-day date-of-birth tolerance was what let keystroke errors in a birthday still resolve to the same person. It is a merge rule, and it makes twins with adjacent birthdays a genuine risk, which is why the successor project added an explicit veto rather than leaning on the tolerance alone.
 - **Unicode normalization before match.** `Jose`, `José`, and `José` (different encodings of the accented e) all collapse to the same canonical form. Catches ~30 duplicates that string-equality would miss.
 - **Placeholder DOB detection.** Rather than trusting every DOB field, the pipeline actively identifies placeholder patterns and flags them. Age-based segmentation built on placeholder DOBs would have been silently wrong.
-- **Tuned against real edge cases, not generic fuzzy matching.** The rules were developed iteratively against BCBA's actual data: twins sharing a last name and date of birth, accented characters, nicknames against full names. There was no scored benchmark on this project. Ambiguous pairs were reviewed by hand, which is a reasonable way to build the rules and a weak way to prove them. I built [client-data-cleaner](https://github.com/maxwellwilber-cpu/client-data-cleaner) afterwards specifically to close that gap. It is not the same rule set: it adds tiers this project did not have, including a veto that refuses to merge two records whose dates of birth are more than a day apart. It measures what it does against known ground truth, and anyone can re-run the harness.
+- **Tuned against real edge cases, not generic fuzzy matching.** The rules were developed iteratively against the academy's actual data: twins sharing a last name and date of birth, accented characters, nicknames against full names. There was no scored benchmark on this project. Ambiguous pairs were reviewed by hand, which is a reasonable way to build the rules and a weak way to prove them. I built [client-data-cleaner](https://github.com/maxwellwilber-cpu/client-data-cleaner) afterwards specifically to close that gap. It is not the same rule set: it adds tiers this project did not have, including a veto that refuses to merge two records whose dates of birth are more than a day apart. It measures what it does against known ground truth, and anyone can re-run the harness.
 - **Record count reconciliation as the safety net.** Input vs. output counts are checked at every transformation stage to confirm no silent drops or duplications. Any transform that unexpectedly changes the cardinality fails this check and halts the pipeline rather than producing output of unknown integrity.
 
 **What would break with a less-rigorous approach:**
@@ -126,12 +126,12 @@ A formal scored-benchmark QA harness with a pre-labeled ground-truth set is a pl
 
 - **Status:** Production. In active use since Q3 2025.
 - **Refresh cadence:** Re-runs against fresh source exports on demand (typically monthly or when a new behavioral question is asked); each run completes in under 10 minutes
-- **Maintainer:** me. Source exports are pulled by the BCBA GM; I run the pipeline.
-- **Primary consumer:** BCBA ownership and GM, plus the Q1 2026 reactivation campaign team
+- **Maintainer:** me. Source exports are pulled by the academy GM; I run the pipeline.
+- **Primary consumer:** the academy ownership and GM, plus the Q1 2026 reactivation campaign team
 
 ---
 
-## 8. Business Outcomes for BCBA
+## 8. Business Outcomes for the academy
 
 - **$1.2M+ in lapsed-client spend surfaced as addressable reactivation opportunity**. 3,029 clients with known contact info and known historical spend, ranked by monetary value for targeted outreach.
 - **First data-driven view of client behavior in company history**, before this, the business operated on GM intuition and anecdote. The business can now answer any behavioral question without a multi-day data reconciliation cycle.
@@ -145,7 +145,7 @@ A formal scored-benchmark QA harness with a pre-labeled ground-truth set is a pl
 
 > Built an ETL pipeline and governed client data platform for a $1.41M-revenue business, unifying 88,306 session records and 12,244 client records across 4 disparate sources in Python and pandas, with tiered identity matching and every merge logged to its rule; the platform powers RFM segmentation, cohort retention analysis, and the first data-driven reactivation campaign in company history, surfacing 3,029 lapsed clients with $1.2M+ in historical spend.
 
-Every number in this bullet comes from the pipeline outputs and BCBA's source data.
+Every number in this bullet comes from the pipeline outputs and the academy's source data.
 
 ---
 

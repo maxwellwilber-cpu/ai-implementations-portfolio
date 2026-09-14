@@ -1,6 +1,6 @@
 # Enterprise Sales Intelligence System: the master strategy engine
 
-**Built for:** RevSend (B2B SaaS corporate gifting platform)
+**Built for:** the platform (B2B SaaS corporate gifting platform)
 **Deployed:** 2025
 **Author:** Maxwell Wilber
 **Stack:** Multi-session Claude AI with context-transfer document architecture, markdown output with relational cross-references
@@ -9,11 +9,11 @@
 
 ## 1. Identity & Purpose
 
-A 615-line operational source of truth consolidating six fragmented sales assets into a single document covering ideal customer profiles, messaging frameworks, competitive intelligence, sequence rules, and CRM operating procedures. Designed to serve as the onboarding document for new SDR hires as the RevSend team scales.
+A 615-line operational source of truth consolidating six fragmented sales assets into a single document covering ideal customer profiles, messaging frameworks, competitive intelligence, sequence rules, and CRM operating procedures. Designed to serve as the onboarding document for new SDR hires as the platform team scales.
 
-**Problem solved:** RevSend's sales knowledge was distributed across six files in six different formats, a 52-slide competitive deck, a 47-slide client use cases deck, a 27,000-word cold outreach playbook, 125+ competitor case study URLs, a 102-company prospect research spreadsheet, and a collection of ad-hoc messaging templates. An SDR preparing for a prospect call had to open six tabs, cross-reference manually, and reconstruct the buyer story on the fly. New-hire onboarding required weeks of this manual synthesis before a rep could run their own outreach, the source-of-truth doc collapses that into a guided reading cycle against a single searchable file.
+**Problem solved:** the platform's sales knowledge was distributed across six files in six different formats, a 52-slide competitive deck, a 47-slide client use cases deck, a 27,000-word cold outreach playbook, 125+ competitor case study URLs, a 102-company prospect research spreadsheet, and a collection of ad-hoc messaging templates. An SDR preparing for a prospect call had to open six tabs, cross-reference manually, and reconstruct the buyer story on the fly. New-hire onboarding required weeks of this manual synthesis before a rep could run their own outreach, the source-of-truth doc collapses that into a guided reading cycle against a single searchable file.
 
-**Users:** RevSend SDRs and account managers. Serves as the onboarding reference document as the team scales.
+**Users:** the platform SDRs and account managers. Serves as the onboarding reference document as the team scales.
 
 ---
 
@@ -134,14 +134,14 @@ What was previously a 30-minute prep session across six tabs becomes a 5-minute 
 
 ## 7. Deployment Status
 
-- **Status:** Production. In active reference use by the RevSend SDR team since 2025.
+- **Status:** Production. In active reference use by the platform SDR team since 2025.
 - **Maintenance cadence:** Refreshed quarterly as new case studies, ICP learnings, and competitive intel accumulate. The structure is designed to absorb new content without rewrites, a new competitor gets a new battle card; a new client story gets a new row in the lookup.
-- **Maintainer:** I for structural updates; RevSend SDR team for in-line additions.
+- **Maintainer:** I for structural updates; the platform SDR team for in-line additions.
 - **Primary consumer:** Active SDRs plus every new SDR onboarded after 2025.
 
 ---
 
-## 8. Business Outcomes for RevSend
+## 8. Business Outcomes for the platform
 
 - **Onboarding compressed substantially.** New SDR ramp moved from a multi-week manual synthesis process to a guided reading cycle against a single document.
 - **Single source of truth for sales content.** Eliminated the "which document is authoritative" question that previously sat behind every messaging and competitive discussion.

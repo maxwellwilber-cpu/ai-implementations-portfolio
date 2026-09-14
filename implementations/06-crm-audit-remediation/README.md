@@ -1,6 +1,6 @@
 # CRM Audit and Batch Remediation (HubSpot API)
 
-**Built for:** RevSend, a B2B SaaS corporate gifting platform
+**Built for:** the platform, a B2B SaaS corporate gifting platform
 **Deployed:** 2025
 **Stack:** Claude with the HubSpot MCP server, HubSpot CRM REST API, batch operations
 
@@ -8,11 +8,11 @@
 
 ## What it is
 
-An automated audit of RevSend's HubSpot instance. It analyzed 612 contacts, categorized them by engagement status, and executed batch updates to standardize lead statuses and create structured activity notes. 550 update operations ran with zero failures.
+An automated audit of the platform's HubSpot instance. It analyzed 612 contacts, categorized them by engagement status, and executed batch updates to standardize lead statuses and create structured activity notes. 550 update operations ran with zero failures.
 
 **The problem.** The outbound SDR team had six months of CRM drift behind it: inconsistent lead statuses, contacts with no categorization at all, voicemails logged in whatever format the rep felt like, and duplicate records created when people re-imported prospect lists. Cleaning that by hand is roughly eight hours of SDR time, and nobody had eight hours.
 
-**Who used it.** The RevSend SDR team. I was at RevSend as a contracted employee handling customer success and automations. The cleaned-up CRM state became the foundation for the Outbound Sales Agent skill. That agent cannot reason usefully about a prospect if the underlying record is wrong.
+**Who used it.** The SDR team. I was at the SaaS company as a contracted employee handling customer success and automations. The cleaned-up CRM state became the foundation for the Outbound Sales Agent skill. That agent cannot reason usefully about a prospect if the underlying record is wrong.
 
 ---
 
@@ -86,9 +86,9 @@ The API calls are the easy part. Three things took the thinking:
 
 ## Deployment
 
-Ran as a one-time remediation sweep against RevSend's live HubSpot portal in 2025. The categorization logic and the note format were carried forward as the team's ongoing standard.
+Ran as a one-time remediation sweep against the platform's live HubSpot portal in 2025. The categorization logic and the note format were carried forward as the team's ongoing standard.
 
-## Outcome for RevSend
+## Outcome for the platform
 
 Lead statuses became consistent across the pipeline, which made sequence targeting reliable. Voicemail activity became searchable, so questions like "which voicemails from last week never got a follow-up" became answerable. Roughly 8 hours of SDR time per audit cycle went back to selling.
 
